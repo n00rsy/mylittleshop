@@ -3,8 +3,7 @@ import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { IconHome2, IconGauge, IconChevronRight, IconActivity, IconCircleOff } from '@tabler/icons-react';
-import { Text, AppShell, Burger, Group, Skeleton, NavLink, Loader, Button, Anchor } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { Text, AppShell, Burger, Group, Skeleton, NavLink, Loader, Button, Anchor, Container, Title, Flex, Center } from '@mantine/core';
 import { useEffect } from "react";
 
 export default function Landing() {
@@ -14,25 +13,34 @@ export default function Landing() {
   useEffect(() => {
     if (status === "authenticated") {
       return (
-        router.push("/home")
+        router.push("/dashboard/home")
       );
     }
   }, [session, status, router])
   return (
     <AppShell
-      navbar={{ width: 300, breakpoint: 'sm'}}
+      navbar={{ width: 300, breakpoint: 'sm' }}
       padding="md"
     >
       <AppShell.Header>
-        <Text visibleFrom="xs">
-        LOGO HERE
-        </Text>
-        <Group justify="flex-end" gap="md">
-          <Anchor href="/signup">Sign up</Anchor>
-          <Button component="a" href="/login">Login</Button>
-        </Group>
+        <Container fluid>
+          <Flex justify="flex-start">
+            <Title visibleFrom="xs">
+              mylittleshop
+            </Title>
+            <Container flex={1}></Container>
+            <Group justify="flex-end" gap="md">
+              <Anchor href="/signup">Sign up</Anchor>
+              <Button component="a" href="/login">Login</Button>
+            </Group>
+          </Flex>
+        </Container>
       </AppShell.Header>
-      <AppShell.Main>please buy this saas!!!</AppShell.Main>
+      <AppShell.Main>
+
+        <Center>Please buy this saas!</Center>
+
+      </AppShell.Main>
     </AppShell>
   )
 }

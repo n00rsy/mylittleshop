@@ -4,6 +4,8 @@ const options = {appName: 'devrel.article.nextauthjs'};
 export const connectDB = async () => {
   try {
     const { connection } = await mongoose.connect(MONGO_URI as string, options);
+    require('../models/User')
+    require('../models/Shop')
     if (connection.readyState === 1) {
       return Promise.resolve(true);
     }

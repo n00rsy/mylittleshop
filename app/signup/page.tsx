@@ -1,10 +1,8 @@
 "use client";
 import { FormEvent, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { register } from "@/actions/register";
+import { register } from "@/actions/user";
 import { useForm } from '@mantine/form';
-import { signIn } from "next-auth/react";
 import {
   TextInput,
   PasswordInput,
@@ -69,7 +67,6 @@ export default function Register() {
     } else {
       return router.push("/");
     }
-
   };
 
   return (
@@ -79,7 +76,7 @@ export default function Register() {
   <Container size="xs">
   <Paper radius="md" p="xl" withBorder shadow="sm">
       <Text size="lg" fw={500}>
-        Welcome to mysimpleshop, continue with
+        Welcome to mylittleshop, continue with
       </Text>
 
       <Group grow mb="md" mt="md">
@@ -98,8 +95,6 @@ export default function Register() {
             onChange={(event) => form.setFieldValue('name', event.currentTarget.value)}
             radius="md"
           />
-
-
           <TextInput
             required
             label="Email"

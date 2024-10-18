@@ -1,5 +1,7 @@
 "use client";
 
+import { DashboardProvider } from "@/context/DashboardContext";
+import { MantineProvider } from "@mantine/core";
 import { SessionProvider } from "next-auth/react";
 
 type Props = {
@@ -7,5 +9,12 @@ type Props = {
 };
 
 export const Provider = ({ children }: Props) => {
-  return <SessionProvider>{children}</SessionProvider>;
+  return (
+  <SessionProvider>
+
+      <MantineProvider>
+        {children}
+      </MantineProvider>
+
+  </SessionProvider>);
 };

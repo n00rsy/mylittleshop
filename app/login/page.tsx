@@ -2,7 +2,6 @@
 import { FormEvent, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { register } from "@/actions/register";
 import { useForm } from '@mantine/form';
 import { signIn } from "next-auth/react";
 import {
@@ -65,7 +64,7 @@ export default function Login() {
       setError(res.error as string);
     }
     if (res?.ok) {
-      return router.push("/home");
+      return router.push("/dashboard");
     }
   };
 
@@ -76,7 +75,7 @@ export default function Login() {
     <Container size="xs">
     <Paper radius="md" p="xl" withBorder shadow="sm">
       <Text size="lg" fw={500}>
-        Welcome to mysimpleshop, continue with
+        Welcome to mylittleshop, continue with
       </Text>
 
       <Group grow mb="md" mt="md">
