@@ -2,6 +2,7 @@
 
 import { DashboardProvider } from "@/context/DashboardContext";
 import { MantineProvider } from "@mantine/core";
+import { ModalsProvider } from "@mantine/modals";
 import { SessionProvider } from "next-auth/react";
 
 type Props = {
@@ -10,11 +11,11 @@ type Props = {
 
 export const Provider = ({ children }: Props) => {
   return (
-  <SessionProvider>
-
+    <SessionProvider>
       <MantineProvider>
-        {children}
+        <ModalsProvider>
+          {children}
+        </ModalsProvider>
       </MantineProvider>
-
-  </SessionProvider>);
+    </SessionProvider>);
 };

@@ -13,7 +13,7 @@ export default function Landing() {
   useEffect(() => {
     if (status === "authenticated") {
       return (
-        router.push("/dashboard/home")
+        router.push("/dashboard/0/home")
       );
     }
   }, [session, status, router])

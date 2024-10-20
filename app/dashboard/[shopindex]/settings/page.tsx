@@ -1,6 +1,6 @@
 'use client'
 import { DashboardContext } from "@/context/DashboardContext"
-import { Button, Divider, Input, Text, Group, TextInput, Title, Container, Table, Box, Textarea } from "@mantine/core"
+import { Button, Divider, Input, Text, Group, TextInput, Title, Container, Table, Box, Textarea, Paper } from "@mantine/core"
 import { useContext, useState } from "react"
 import { useToggle } from '@mantine/hooks';
 import { updateShop } from "@/actions/shop";
@@ -52,6 +52,7 @@ export default function Settings() {
     return (
         <Container>
             <Title>Settings</Title>
+            <Paper radius="md" p="xl" withBorder shadow="sm">
             <Group justify="flex-start" pb={10}>
                 <Title order={4}>Shop Details</Title>
                 <Box flex={1}></Box>
@@ -122,6 +123,7 @@ export default function Settings() {
                     </Table.Tr>
                 </Table.Tbody>
             </Table>
+            </Paper>
         </Container>
     )
 }

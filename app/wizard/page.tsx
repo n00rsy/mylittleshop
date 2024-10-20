@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react';
 import { Stepper, Button, Group, Center, Title, Container, Stack, Paper, Table, TextInput, Textarea } from '@mantine/core';
+import ProductEditor from '@/components/ProductEditor/ProductEditor';
 
 export default function Wizard() {
     const [active, setActive] = useState(1);
@@ -60,7 +61,7 @@ export default function Wizard() {
                     </Stepper.Step>
                     <Stepper.Step label="Products" description="What are you selling?">
                     <Paper radius="md" p="xl" withBorder shadow="sm">
-
+                    <ProductEditor save={false}></ProductEditor>
                     </Paper>
                     </Stepper.Step>
                     <Stepper.Step label="Theme" description="make it your own!">

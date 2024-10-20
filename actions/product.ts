@@ -22,6 +22,12 @@ export const createProduct = async (productInfo: any, s_id: string, u_id: string
     return savedProduct.toObject()
 }
 
+export const createProductWithoutDb = async (productInfo: any) => {
+    console.log("createProductWithoutDb", productInfo)
+    const newProduct = new Product(productInfo)
+    return newProduct.toObject()
+}
+
 export const getProduct = async (p_id: string, u_id: string) => {
     console.log("getProduct got: ", p_id, u_id)
 

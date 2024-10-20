@@ -48,7 +48,7 @@ export default function DashboardAppShellLayout({ userData, children }: { userDa
         icon: ForwardRefExoticComponent<any>
     }
 
-    const pages:Page[] = [{title:'home', icon: IconHome}, {title: 'products', icon: IconBuildingWarehouse}, {title:'settings', icon: IconSettings}, {title: 'orders', icon: IconHome}]
+    const pages:Page[] = [{title:'home', icon: IconHome}, {title: 'products', icon: IconBuildingWarehouse}, {title: 'orders', icon: IconHome}, {title:'settings', icon: IconSettings}]
 
     const navlinks = pages.map((page) => {
         return (<NavLink
