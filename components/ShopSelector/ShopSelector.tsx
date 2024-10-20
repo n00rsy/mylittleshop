@@ -1,13 +1,12 @@
-import { ReactNode } from "react";
-import { Text, Stack, AppShell, Flex, Title, Burger, Group, Center, NavLink, Loader, Button, Container, Box, Avatar, Menu, rem, Anchor } from '@mantine/core';
-import { IconBuildingStore, IconChevronDown, IconHome2, IconLogout, IconPlus, IconSettings } from '@tabler/icons-react';
+import { Text,  Group,  Button,  Menu, rem } from '@mantine/core';
+import { IconBuildingStore, IconChevronDown,  IconPlus, } from '@tabler/icons-react';
+import { redirect, useRouter } from 'next/navigation';
 
-
-export default function ShopSelector({ shops }: { shops: [any] }) {
-    console.log("shopsmenu data: ", shops)
-    const shopItems = shops.map((shop) => {
+export default function ShopSelector({ shops, activePage, activeShopIndex }: { shops: [any], activePage: any, activeShopIndex: any }) {
+    const router = useRouter()
+    const shopItems = shops.map((shop, index) => {
         return (
-        <Menu.Item key={shop._id} leftSection={<IconBuildingStore style={{ width: rem(14), height: rem(14) }} />}>
+        <Menu.Item onClick={() => {router.push(`/dashboard/${index}/${activePage}`)}} key={shop._id} leftSection={<IconBuildingStore style={{ width: rem(14), height: rem(14) }} />}>
             {shop.name}
         </Menu.Item>
     )})
@@ -18,7 +17,7 @@ export default function ShopSelector({ shops }: { shops: [any] }) {
             <Menu.Target>
                 <Button variant="subtle">
                     <Group>
-                        <Text>{shops[0].name}</Text>
+                        <Text>{shops[activeShopIndex].name}</Text>
                         <IconChevronDown style={{ width: rem(14), height: rem(14) }} />
                     </Group>
                 </Button>
@@ -26,7 +25,7 @@ export default function ShopSelector({ shops }: { shops: [any] }) {
             <Menu.Dropdown>
                 {shopItems}
                 <Menu.Divider />
-                <Menu.Item leftSection={<IconPlus style={{ width: rem(14), height: rem(14) }} />}>
+                <Menu.Item  onClick={() => {router.push(`/wizard`)}} leftSection={<IconPlus style={{ width: rem(14), height: rem(14) }} />}>
                     Create new shop
                 </Menu.Item>
             </Menu.Dropdown>

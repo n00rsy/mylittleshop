@@ -62,10 +62,11 @@ export default function Register() {
     });
     ref.current?.reset();
     if (r?.error) {
+      console.log("error!", r)
       setError(r.error);
       return;
     } else {
-      return router.push("/");
+      router.push("/dashboard/0/home");
     }
   };
 
@@ -132,7 +133,7 @@ export default function Register() {
             Forgot password?
           </Anchor>
           <Button type="submit" fullWidth mt="xl">
-            Register
+            Sign up
           </Button>
         </Group>
       </form>

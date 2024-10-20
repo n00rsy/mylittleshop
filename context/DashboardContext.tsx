@@ -17,6 +17,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
 
 
     const [userData, setUserData] = useState<any>(null);
+    const [activeShopIndex, setActiveShopIndex] = useState<any>(null);
     // const { data: session, status } = useSession()
     // const session = useSession()
     // useEffect(() => {
@@ -33,7 +34,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
     //     if (userData == null) getUserData()
     // }, [session])
 
-    return (<DashboardContext.Provider value={{ userData, setUserData }}>
+    return (<DashboardContext.Provider value={{ userData, setUserData, activeShopIndex, setActiveShopIndex }}>
         {children}
     </DashboardContext.Provider>);
 }

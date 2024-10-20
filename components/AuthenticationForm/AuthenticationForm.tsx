@@ -41,7 +41,7 @@ export function AuthenticationForm(props: AuthenticationFormProps) {
   return (
     <Paper radius="md" p="xl" withBorder {...props}>
       <Text size="lg" fw={500}>
-        Welcome to Mantine, {type} with
+        Welcome to mylittleshop, {type} with
       </Text>
 
       <Group grow mb="md" mt="md">

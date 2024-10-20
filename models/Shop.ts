@@ -15,13 +15,16 @@ export interface ShopDocument {
         type: string,
         unique: true,
     }
-    description: string
+    tagline: string,
+    about: string,
     createdAt: Date;
     updatedAt: Date;
 }
 
 export const ShopSchema = new Schema({
     name: String,
+    tagline: String,
+    about: String,
     theme: {
         type: String, enum: ['light', 'dark', 'minimal', 'modern'],
         default: 'minimal'

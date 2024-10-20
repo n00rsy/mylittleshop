@@ -4,7 +4,7 @@ import DashboardAppShellLayout from "./AppShellLayout";
 import { ReactNode, useContext } from "react";
 import { redirect } from "next/navigation";
 import { getUserByEmail } from "@/actions/user";
-import { DashboardContext, DashboardProvider } from "@/context/DashboardContext";
+import { DashboardProvider } from "@/context/DashboardContext";
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
     console.log("dashboard layout function...")
     const session = await getServerSession()
@@ -18,8 +18,9 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     // setUserData(newUserData)
     return (
         <DashboardProvider>
-            <DashboardAppShellLayout userData={newUserData}>{children}</DashboardAppShellLayout>
-            </DashboardProvider>
-
+            <DashboardAppShellLayout userData={newUserData}>
+                {children}
+            </DashboardAppShellLayout>
+        </DashboardProvider>
     )
 }

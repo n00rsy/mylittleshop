@@ -24,7 +24,13 @@ export const register = async (values: any) => {
 
 export const getUserByEmail = async (email: string) => {
   await connectDB();
-  return await User.findOne({ email }).populate('shops').lean();
+  return await User.findOne({ email }).populate({
+    path: 'shops',
+    populate: {
+      path: 'products',
+      model: 'Product'
+    }
+  }).lean();
 }
 
 export const updateUser = async (id: string, user: UserDocument) => {

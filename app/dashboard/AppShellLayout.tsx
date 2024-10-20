@@ -1,6 +1,6 @@
 
 'use client'
-import { redirect } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import { IconBuildingWarehouse, IconHome, IconHome2, IconLogout, IconSettings } from '@tabler/icons-react';
 import { Text, Stack, AppShell, Title, Burger, Group, Center, NavLink, Loader, Button, Container, Box, Avatar, Menu, rem, Anchor } from '@mantine/core';
 import { upperFirst, useDisclosure } from '@mantine/hooks';
@@ -10,23 +10,26 @@ import { signOut, useSession } from "next-auth/react";
 import { DashboardContext } from "@/context/DashboardContext";
 import ShopSelector from "@/components/ShopSelector/ShopSelector";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
+
+export const PageContext = React.createContext(null);
+
 export default function DashboardAppShellLayout({ userData, children }: { userData: any, children: ReactNode }) {
     console.log("dashboard layout function...", userData)
-
+    const router = useRouter()
     const { data: session, status } = useSession();
     const [activePage, setActivePage] = useState('home')
     const [opened, { toggle }] = useDisclosure();
-    const { setUserData } = useContext(DashboardContext)
+    const { setUserData, setActiveShopIndex } = useContext(DashboardContext)
     setUserData(userData)
-    // setActivePage('home')
-    // const { userData, setUserData } = useContext(DashboardContext)
 
     const pathname = usePathname();
+    const {shopindex} = useParams()
     useEffect(() => {
         console.log(`Route changed to: ${pathname}`);
         const tokens = pathname.split('/')
         console.log('setting active page: ', tokens[2])
-        setActivePage(tokens[2])
+        setActivePage(tokens[3])
       }, [pathname]);
 
     useEffect(() => {
@@ -35,7 +38,11 @@ export default function DashboardAppShellLayout({ userData, children }: { userDa
             console.log("LAYOUT UNMOUNTED")
         }
     }, [])
-
+    console.log("shopindex: ", shopindex)
+    if (shopindex >= userData.shops.length) {
+        router.push('/404')
+    }
+    setActiveShopIndex(Number(shopindex))
     interface Page {
         title: string,
         icon: ForwardRefExoticComponent<any>
@@ -45,7 +52,7 @@ export default function DashboardAppShellLayout({ userData, children }: { userDa
 
     const navlinks = pages.map((page) => {
         return (<NavLink
-                    href={`/dashboard/${page.title}`}
+                    href={`${page.title}`}
                     label={upperFirst(page.title)}
                     leftSection={<page.icon size="1rem" stroke={1.5} />}
                     data-active={activePage === page.title || undefined}
@@ -100,7 +107,7 @@ export default function DashboardAppShellLayout({ userData, children }: { userDa
                         </Title>
                         <Box flex={1}></Box>
                         <Group justify="flex-end" gap="md">
-                            <ShopSelector shops={userData?.shops || []} />
+                            <ShopSelector activeShopIndex={shopindex} activePage={activePage} shops={userData?.shops || []} />
                             <Menu shadow="md" width={200}>
                                 <Menu.Target>
                                     <Anchor variant="subtle">

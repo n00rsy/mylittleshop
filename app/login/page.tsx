@@ -1,7 +1,6 @@
 "use client";
-import { FormEvent, useRef, useState } from "react";
+import {  useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { useForm } from '@mantine/form';
 import { signIn } from "next-auth/react";
 import {
@@ -41,16 +40,6 @@ export default function Login() {
 
   const [error, setError] = useState<string>();
   const router = useRouter();
-  const ref = useRef<HTMLFormElement>(null);
-
-  const paperProps = {
-    "title": "Authentication form",
-    "category": "authentication",
-    "canvas": {
-      "center": true,
-      "maxWidth": 420
-    }
-  }
 
   const handlesubmit = async (name: string, email: string, password: string) => {
     console.log("handlesubmit: ", name, email, password)

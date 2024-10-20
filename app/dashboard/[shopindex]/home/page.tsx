@@ -3,6 +3,7 @@ import { IconBuildingStore, IconChevronDown, IconHome2, IconLogout, IconPlus, Ic
 import { Text, Stack, AppShell, Flex, Title, Burger, Group, Center, NavLink, Loader, Button, Container, Box, Avatar, Menu, rem, Anchor, JsonInput } from '@mantine/core';
 
 import { createShop } from "@/actions/shop";
+import { useParams } from 'next/navigation';
 
 export default function Home(props: any) {
     const {userData} = props
@@ -17,7 +18,7 @@ export default function Home(props: any) {
             },
             url: "asdfbookstore",
             name: "A S D F Bookstore",
-            description: "Bookstore for asdf books",
+            tagline: "Bookstore for asdf books",
             products: []
         }
 

@@ -6,6 +6,7 @@ export const connectDB = async () => {
     const { connection } = await mongoose.connect(MONGO_URI as string, options);
     require('../models/User')
     require('../models/Shop')
+    require('../models/Product')
     if (connection.readyState === 1) {
       return Promise.resolve(true);
     }
