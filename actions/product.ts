@@ -1,11 +1,13 @@
 "use server"
 
+import { connectDB } from "@/lib/mongodb"
 import Product from "@/models/Product"
 import Shop from "@/models/Shop"
 import User from "@/models/User"
 
 export const createProduct = async (productInfo: any, s_id: string, u_id: string) => {
     console.log("createProduct got: ", productInfo, s_id, u_id)
+    await connectDB();
     const user = await User.findById(u_id)
     if (!user) {
         return 'User not logged in.'
@@ -24,13 +26,14 @@ export const createProduct = async (productInfo: any, s_id: string, u_id: string
 
 export const createProductWithoutDb = async (productInfo: any) => {
     console.log("createProductWithoutDb", productInfo)
+    await connectDB();
     const newProduct = new Product(productInfo)
     return newProduct.toObject()
 }
 
 export const getProduct = async (p_id: string, u_id: string) => {
     console.log("getProduct got: ", p_id, u_id)
-
+    await connectDB();
     const product = await Product.findById(p_id)
     if (!product) {
         return 'Shop does not exist.'
@@ -40,6 +43,7 @@ export const getProduct = async (p_id: string, u_id: string) => {
 
 export const deleteProduct = async (p_id: string, s_id: string, u_id: string) => {
     console.log("getProduct got: ", p_id, u_id)
+    await connectDB();
 
     await Product.deleteOne({"_id": p_id})
     const shop = await Shop.findById(s_id)

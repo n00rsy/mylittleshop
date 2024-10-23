@@ -11,6 +11,9 @@ export interface UserDocument {
   updatedAt: Date;
   tier: string
   shops: Schema.Types.ObjectId[]
+  stripe: {
+    accountId: string
+  }
 }
 
 const UserSchema = new Schema<UserDocument>({
@@ -40,6 +43,9 @@ const UserSchema = new Schema<UserDocument>({
     type:[{type: Schema.Types.ObjectId, ref: 'Shop'}],
     default: []
   },
+  stripe: {
+    accountId: String
+  }
 },
 {
   timestamps: true,

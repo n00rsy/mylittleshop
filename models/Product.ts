@@ -9,6 +9,7 @@ export interface ProductDocument {
     images: [string];
     createdAt: Date;
     updatedAt: Date;
+    active: boolean;
 }
 
 export const ProductSchema = new Schema({
@@ -17,6 +18,7 @@ export const ProductSchema = new Schema({
     price: { type: Number, required: true, min: 0 },
     quantity: { type: Number, default: 0 },
     images: [String],
+    active: { type: Boolean, default: true}
 }, { timestamps: true });
 
 const Product = mongoose.models?.Product || model<ProductDocument>('Product', ProductSchema);

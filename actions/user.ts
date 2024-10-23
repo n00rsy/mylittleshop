@@ -33,7 +33,7 @@ export const getUserByEmail = async (email: string) => {
   }).lean();
 }
 
-export const updateUser = async (id: string, user: UserDocument) => {
+export const updateUser = async (id: string, user: any) => {
   await connectDB();
   return await User.findByIdAndUpdate(id, user);
 }

@@ -34,3 +34,15 @@ export const createShop = async (shop: any, u_id: string) => {
     console.log("updated shop: ", updatedShop)
     // return updatedShop.lean()
   }
+
+
+  export const getShopByUrl = async (url: string) => {
+    console.log("getShopByUrl: ", url)
+    await connectDB();
+    const shop = await Shop.findOne({url: url}).populate('products')
+    if (!shop) {
+      return {error:`shop does not exist: ${url}`}
+    }
+    return shop.toObject()
+    // return updatedShop.lean()
+  }

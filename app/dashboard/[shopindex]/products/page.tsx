@@ -162,9 +162,7 @@ export default function Products() {
 
             <Container>
                 <Title>Products</Title>
-                <Paper radius="md" p="xl" withBorder shadow="sm">
                 <ProductEditor save={true} u_id={userData._id} s_id={activeShop._id} p={activeShop.products}></ProductEditor>
-                </Paper>
             </Container>
         </>
     );

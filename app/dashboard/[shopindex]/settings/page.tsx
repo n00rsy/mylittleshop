@@ -1,9 +1,10 @@
 'use client'
 import { DashboardContext } from "@/context/DashboardContext"
-import { Button, Divider, Input, Text, Group, TextInput, Title, Container, Table, Box, Textarea, Paper } from "@mantine/core"
+import { Button, Divider, Input, Text, Group, TextInput, Title, Container, Table, Box, Textarea, Paper, Select, ColorPicker, ColorSwatch, Switch } from "@mantine/core"
 import { useContext, useState } from "react"
-import { useToggle } from '@mantine/hooks';
+import { upperFirst, useToggle } from '@mantine/hooks';
 import { updateShop } from "@/actions/shop";
+import { themes } from "@/models/Shop";
 
 export default function Settings() {
     const { userData, setUserData, activeShopIndex } = useContext(DashboardContext)
@@ -36,31 +37,68 @@ export default function Settings() {
     //         }
     //     ]
     // }
-    const [isEditing, toggle] = useToggle();
+    const [isEditingDetails, toggleIsEditingDetails] = useToggle();
+    const [isEditingStyle, toggleIsEditingStyle] = useToggle();
+    const [isEditingDeployment, toggleIsEditingDeployment] = useToggle();
 
     const [name, setName] = useState(activeShop.name)
     const [tagline, setTagline] = useState(activeShop.tagline || '')
     const [about, setAbout] = useState(activeShop.about || '')
 
-    const handlesave = async () => {
+    const [theme, setTheme] = useState(activeShop.theme)
+    const [primaryColor, setPrimaryColor] = useState(activeShop.colors.primary)
+    const [secondaryColor, setSecondaryColor] = useState(activeShop.colors.secondary)
+    const [accentColor, setAccentColor] = useState(activeShop.colors.accent)
+
+    const [url, setUrl] = useState(activeShop.url)
+    const [active, setActive] = useState(activeShop.active)
+
+    const themeOptions = themes.map(theme => ({
+        label: upperFirst(theme),
+        value: theme
+    }))
+
+    const handlesavedetails = async () => {
         console.log("saving....")
         const res = await updateShop(userData._id, { _id: activeShop._id, name: name, tagline: tagline, about: about })
         console.log(res)
-        toggle()
+        toggleIsEditingDetails()
+    }
+
+    const handlesavestyle = async () => {
+        console.log("saving style....")
+
+        const colors = {
+            primary: primaryColor,
+            secondary: secondaryColor,
+            accent: accentColor
+        }
+        console.log({ _id: activeShop._id, theme: theme, colors: colors })
+        const res = await updateShop(userData._id, { _id: activeShop._id, theme: theme, colors: colors })
+        console.log(res)
+        toggleIsEditingStyle()
+    }
+
+    const handlesavedeployment = async () => {
+        console.log("saving deployment ....")
+        console.log( { _id: activeShop._id, url: url, active: active })
+        const res = await updateShop(userData._id, { _id: activeShop._id, url: url, active: active })
+        console.log(res)
+        toggleIsEditingDetails()
     }
 
     return (
         <Container>
             <Title>Settings</Title>
-            <Paper radius="md" p="xl" withBorder shadow="sm">
+
             <Group justify="flex-start" pb={10}>
                 <Title order={4}>Shop Details</Title>
                 <Box flex={1}></Box>
-                <Button variant="default" onClick={() => toggle()} >
-                    {isEditing == true ? 'Cancel' : 'Edit'}
+                <Button variant="default" onClick={() => toggleIsEditingDetails()} >
+                    {isEditingDetails == true ? 'Cancel' : 'Edit'}
                 </Button>
-                {isEditing == true && (
-                    <Button onClick={() => handlesave()}>
+                {isEditingDetails == true && (
+                    <Button onClick={() => handlesavedetails()}>
                         Save
                     </Button>
                 )}
@@ -74,8 +112,8 @@ export default function Settings() {
                             <TextInput
                                 value={name}
                                 onChange={(event) => setName(event?.currentTarget.value)}
-                                readOnly={!isEditing}
-                                variant={isEditing ? 'default' : 'unstyled'}
+                                readOnly={!isEditingDetails}
+                                variant={isEditingDetails ? 'default' : 'unstyled'}
                                 styles={{
                                     input: {
                                         padding: 10
@@ -91,8 +129,8 @@ export default function Settings() {
                             <TextInput
                                 value={tagline}
                                 onChange={(event) => setTagline(event?.currentTarget.value)}
-                                readOnly={!isEditing}
-                                variant={isEditing ? 'default' : 'unstyled'}
+                                readOnly={!isEditingDetails}
+                                variant={isEditingDetails ? 'default' : 'unstyled'}
                                 styles={{
                                     input: {
                                         padding: 10
@@ -108,8 +146,8 @@ export default function Settings() {
                             <Textarea
                                 value={about}
                                 onChange={(event) => setAbout(event?.currentTarget.value)}
-                                readOnly={!isEditing}
-                                variant={isEditing ? 'default' : 'unstyled'}
+                                readOnly={!isEditingDetails}
+                                variant={isEditingDetails ? 'default' : 'unstyled'}
                                 styles={{
                                     input: {
                                         padding: 10
@@ -123,7 +161,151 @@ export default function Settings() {
                     </Table.Tr>
                 </Table.Tbody>
             </Table>
-            </Paper>
+
+            <Group justify="flex-start" pb={10}>
+                <Title order={4}>Style</Title>
+                <Box flex={1}></Box>
+                <Button variant="default" onClick={() => toggleIsEditingStyle()} >
+                    {isEditingStyle == true ? 'Cancel' : 'Edit'}
+                </Button>
+                {isEditingStyle == true && (
+                    <Button onClick={() => handlesavestyle()}>
+                        Save
+                    </Button>
+                )}
+            </Group>
+            <Divider />
+            <Table>
+                <Table.Tbody>
+                    <Table.Tr key="theme">
+                        <Table.Td><strong>Theme</strong></Table.Td>
+                        <Table.Td>
+                            <Select
+                                data={themeOptions}
+                                value={theme}
+                                onChange={(_value) => setTheme(_value)}
+                                readOnly={!isEditingStyle}
+                                variant={isEditingStyle ? 'default' : 'unstyled'}
+                                styles={{
+                                    input: {
+                                        padding: 10
+                                    }
+                                }}
+                            />
+                        </Table.Td>
+                    </Table.Tr>
+
+                    <Table.Tr key="primarycolor">
+                        <Table.Td><strong>Primary Color</strong></Table.Td>
+                        <Table.Td>
+                            {!isEditingStyle ? (
+                                <ColorSwatch color={primaryColor} />
+                            ) :
+
+                                (
+                                    <ColorPicker
+                                        value={primaryColor}
+                                        onChange={setPrimaryColor}
+                                        // readOnly={!isEditingDetails}
+                                        variant={isEditingDetails ? 'default' : 'unstyled'}
+
+                                    />
+                                )
+
+                            }
+
+                        </Table.Td>
+                    </Table.Tr>
+
+                    <Table.Tr key="secondarycolor">
+                        <Table.Td><strong>Secondary Color</strong></Table.Td>
+                        <Table.Td>
+                            {!isEditingStyle ? (
+                                <ColorSwatch color={secondaryColor} />
+                            ) :
+
+                                (
+                                    <ColorPicker
+                                        value={secondaryColor}
+                                        onChange={setSecondaryColor}
+                                        // readOnly={!isEditingDetails}
+                                        variant={isEditingDetails ? 'default' : 'unstyled'}
+
+                                    />
+                                )
+                            }
+                        </Table.Td>
+                    </Table.Tr>
+
+                    <Table.Tr key="accentcolor">
+                        <Table.Td><strong>Accent Color</strong></Table.Td>
+                        <Table.Td>
+                            {!isEditingStyle ? (
+                                <ColorSwatch color={accentColor} />
+                            ) :
+
+                                (
+                                    <ColorPicker
+                                        value={accentColor}
+                                        onChange={setAccentColor}
+                                        // readOnly={!isEditingDetails}
+                                        variant={isEditingDetails ? 'default' : 'unstyled'}
+
+                                    />
+                                )
+                            }
+                        </Table.Td>
+                    </Table.Tr>
+                </Table.Tbody>
+            </Table>
+
+            <Group justify="flex-start" pb={10}>
+                <Title order={4}>Deployment</Title>
+                <Box flex={1}></Box>
+                <Button variant="default" onClick={() => toggleIsEditingDeployment()} >
+                    {isEditingDeployment == true ? 'Cancel' : 'Edit'}
+                </Button>
+                {isEditingDeployment == true && (
+                    <Button onClick={() => handlesavedeployment()}>
+                        Save
+                    </Button>
+                )}
+            </Group>
+            <Divider />
+            <Table>
+                <Table.Tbody>
+                    <Table.Tr key="url">
+                        <Table.Td><strong>Url</strong></Table.Td>
+                        <Table.Td>
+                            <TextInput
+                                value={url}
+                                onChange={(event) => setUrl(event?.currentTarget.value)}
+                                readOnly={!isEditingDeployment}
+                                variant={isEditingDeployment ? 'default' : 'unstyled'}
+                                styles={{
+                                    input: {
+                                        padding: 10
+                                    }
+                                }}
+                            />
+                        </Table.Td>
+                    </Table.Tr>
+
+                    <Table.Tr key="active">
+                        <Table.Td><strong>Active</strong></Table.Td>
+                        <Table.Td>
+                            <Switch
+                                checked={active}
+                                onChange={(event) => setActive(event.currentTarget.checked)}
+                                disabled={!isEditingDeployment}
+                            />
+                        </Table.Td>
+                    </Table.Tr>
+
+
+                </Table.Tbody>
+            </Table>
+
         </Container>
     )
 }

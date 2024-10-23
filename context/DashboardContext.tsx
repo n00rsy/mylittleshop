@@ -18,21 +18,6 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
 
     const [userData, setUserData] = useState<any>(null);
     const [activeShopIndex, setActiveShopIndex] = useState<any>(null);
-    // const { data: session, status } = useSession()
-    // const session = useSession()
-    // useEffect(() => {
-    //     console.log("DashboardContext useEffect...")
-    //     const getUserData = async () => {
-    //         console.log("getUserData called, userdata: ",)
-
-    //         if (status === "authenticated") {
-    //             const userData = await getUserByEmail(session?.user?.email || '')
-    //             setUserData(userData)
-    //         }
-    //     }
-
-    //     if (userData == null) getUserData()
-    // }, [session])
 
     return (<DashboardContext.Provider value={{ userData, setUserData, activeShopIndex, setActiveShopIndex }}>
         {children}

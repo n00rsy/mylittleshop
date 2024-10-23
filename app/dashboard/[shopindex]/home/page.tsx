@@ -1,43 +1,59 @@
 "use client";
 import { IconBuildingStore, IconChevronDown, IconHome2, IconLogout, IconPlus, IconSettings } from '@tabler/icons-react';
 import { Text, Stack, AppShell, Flex, Title, Burger, Group, Center, NavLink, Loader, Button, Container, Box, Avatar, Menu, rem, Anchor, JsonInput } from '@mantine/core';
+import { useContext } from 'react';
+import { DashboardContext } from '@/context/DashboardContext';
+import { createStripeAccount, getStripeAccount, onboardStripeAccount, updateStripeAccount } from '@/actions/stripe';
+import { useRouter } from 'next/navigation';
 
-import { createShop } from "@/actions/shop";
-import { useParams } from 'next/navigation';
-
-export default function Home(props: any) {
-    const {userData} = props
-    const handlecreate = async () => {
-
-        let testShop = {
-            theme: "light",
-            colors: {
-                primary: "string",
-                secondary: "string",
-                accent: "string"
-            },
-            url: "asdfbookstore",
-            name: "A S D F Bookstore",
-            tagline: "Bookstore for asdf books",
-            products: []
+export default function Home() {
+    const { userData, setUserData, activeShopIndex } = useContext(DashboardContext)
+    const activeShop = userData.shops[activeShopIndex]
+    const router = useRouter()
+    const handleeditstripe = async () => {
+        console.log("requesting edit stripe...")
+        const accountLink = await updateStripeAccount(userData.stripe.accountId)
+        console.log(accountLink)
+        if (accountLink) {
+            router.push(accountLink)
         }
-
-        const r = await createShop(testShop, userData._id)
-        console.log(r)
-
     }
+
+    const handlcreatestripe = async () => {
+        console.log("requesting add stripe...")
+        const accountLink = await createStripeAccount(userData)
+        console.log(accountLink)
+        if (accountLink) {
+            router.push(accountLink)
+        }
+    }
+
+    const handlefinshstripe = async () => {
+        console.log("requesting finish stripe...")
+        const accountLink = await onboardStripeAccount(userData.stripe.accountId)
+        console.log(accountLink)
+        router.push(accountLink)
+    }
+
     return (
         <Center style={{ height: '50vh' }}>
             <Container>
-                    <Stack>
-                        <Text >
-                            {JSON.stringify(userData, null, 2)}
-                        </Text>
-                        <Button component="a" href="/wizard">Create a Shop</Button>
-                        <Button onClick={() => handlecreate()}>Create Test Shop</Button>
+                <Stack>
+                    <Button component="a" href={`/shop/${activeShop.url}`}>View your Shop</Button>
 
-                    </Stack>
-                </Container>
+                    {(userData!.stripe!) ?
+
+                        ((userData!.stripe.isOnboarded) ?
+                            (<Button onClick={handleeditstripe}>Edit Stripe Details</Button>) :
+                            (<Button onClick={handlefinshstripe}>Finish Stripe Details</Button>)) :
+
+                        (<Button onClick={handlcreatestripe}>Create Stripe Details</Button>)
+
+                    }
+
+
+                </Stack>
+            </Container>
         </Center>
     );
 }

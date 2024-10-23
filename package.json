@@ -27,6 +27,7 @@
     "@mantine/notifications": "^7.13.2",
     "@mantinex/dev-icons": "^1.0.2",
     "@next/bundle-analyzer": "^14.2.4",
+    "@stripe/stripe-js": "^4.8.0",
     "@tabler/icons": "^3.19.0",
     "@tabler/icons-react": "^3.6.0",
     "bcryptjs": "^2.4.3",
@@ -35,7 +36,8 @@
     "next": "14.2.4",
     "next-auth": "^4.24.8",
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "stripe": "^17.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.7",

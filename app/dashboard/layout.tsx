@@ -5,6 +5,7 @@ import { ReactNode, useContext } from "react";
 import { redirect } from "next/navigation";
 import { getUserByEmail } from "@/actions/user";
 import { DashboardProvider } from "@/context/DashboardContext";
+
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
     console.log("dashboard layout function...")
     const session = await getServerSession()
@@ -12,13 +13,14 @@ export default async function DashboardLayout({ children }: { children: ReactNod
         redirect('/login')
     }
 
-    const newUserData = await getUserByEmail(session.user?.email)
-    console.log("newUserData", newUserData)
-    // const { setUserData } = useContext(DashboardContext)
-    // setUserData(newUserData)
+    const userData = await getUserByEmail(session.user?.email)
+    // TODO: GET STRIPE ACCOUNT INFO
+    // TODO: default shop
+    console.log("newUserData", userData)
+
     return (
         <DashboardProvider>
-            <DashboardAppShellLayout userData={newUserData}>
+            <DashboardAppShellLayout userData={userData}>
                 {children}
             </DashboardAppShellLayout>
         </DashboardProvider>

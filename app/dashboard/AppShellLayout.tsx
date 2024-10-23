@@ -39,7 +39,7 @@ export default function DashboardAppShellLayout({ userData, children }: { userDa
         }
     }, [])
     console.log("shopindex: ", shopindex)
-    if (shopindex >= userData.shops.length) {
+    if (shopindex >= userData.shops.length && userData.shops.length > 0) {
         router.push('/404')
     }
     setActiveShopIndex(Number(shopindex))

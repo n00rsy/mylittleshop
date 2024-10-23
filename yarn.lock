@@ -2023,6 +2023,11 @@
   resolved "https://artprod.dev.bloomberg.com/artifactory/api/npm/npm-repos/@storybook/theming/-/theming-8.3.4.tgz"
   integrity sha512-D4XVsQgTtpHEHLhwkx59aGy1GBwOedVr/mNns7hFrH8FjEpxrrWCuZQASq1ZpCl8LXlh7uvmT5sM2rOdQbGuGg==
 
+"@stripe/stripe-js@^4.8.0":
+  version "4.8.0"
+  resolved "https://artprod.dev.bloomberg.com/artifactory/api/npm/npm-repos/@stripe/stripe-js/-/stripe-js-4.8.0.tgz"
+  integrity sha512-+4Cb0bVHlV4BJXxkJ3cCLSLuWxm3pXKtgcRacox146EuugjCzRRII5T5gUMgL4HpzrBLVwVxjKaZqntNWAXawQ==
+
 "@swc/counter@^0.1.3":
   version "0.1.3"
   resolved "https://artprod.dev.bloomberg.com/artifactory/api/npm/npm-repos/@swc/counter/-/counter-0.1.3.tgz"
@@ -2275,7 +2280,7 @@
   resolved "https://artprod.dev.bloomberg.com/artifactory/api/npm/npm-repos/@types/mime/-/mime-1.3.5.tgz"
   integrity sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==
 
-"@types/node@*", "@types/node@^20.14.8":
+"@types/node@*", "@types/node@^20.14.8", "@types/node@>=8.1.0":
   version "20.16.10"
   resolved "https://artprod.dev.bloomberg.com/artifactory/api/npm/npm-repos/@types/node/-/node-20.16.10.tgz"
   integrity sha512-vQUKgWTjEIRFCvK6CyriPH3MZYiYlNy0fKiEYHWbcoWLEgs4opurGGKlebrTLqdSMIbXImH6XExNiIyNUv3WpA==
@@ -7796,7 +7801,7 @@ pure-rand@^6.0.0:
   resolved "https://artprod.dev.bloomberg.com/artifactory/api/npm/npm-repos/pure-rand/-/pure-rand-6.1.0.tgz"
   integrity sha512-bVWawvoZoBYpp6yIoQtQXHZjmz35RSVHnUOTefl8Vcjr8snTPY1wnpSPMWekcFwbxI6gtmT7rSYPFvz71ldiOA==
 
-qs@^6.12.3, qs@6.13.0:
+qs@^6.11.0, qs@^6.12.3, qs@6.13.0:
   version "6.13.0"
   resolved "https://artprod.dev.bloomberg.com/artifactory/api/npm/npm-repos/qs/-/qs-6.13.0.tgz"
   integrity sha512-+38qI9SOr8tfZ4QmJNplMUxqjbe7LKvvZgWdExBOmd+egZTtjLB67Gu0HRX3u/XOq7UU2Nx6nsjvS16Z9uwfpg==
@@ -8903,6 +8908,14 @@ strip-json-comments@^3.1.1:
   version "3.1.1"
   resolved "https://artprod.dev.bloomberg.com/artifactory/api/npm/npm-repos/strip-json-comments/-/strip-json-comments-3.1.1.tgz"
   integrity sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==
+
+stripe@^17.2.0:
+  version "17.2.0"
+  resolved "https://artprod.dev.bloomberg.com/artifactory/api/npm/npm-repos/stripe/-/stripe-17.2.0.tgz"
+  integrity sha512-KuDplY9WrNKi07+uEFeguis/Mh+HC+hfEMy8P5snhQzCXUv01o+4KcIJ9auFxpv4Odp2R2krs9rZ9PhQl8+Sdw==
+  dependencies:
+    "@types/node" ">=8.1.0"
+    qs "^6.11.0"
 
 style-loader@^3.3.1:
   version "3.3.4"

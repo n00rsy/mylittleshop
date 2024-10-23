@@ -1,6 +1,8 @@
 import mongoose, { Schema, model } from "mongoose";
 import { ProductSchema } from "./Product";
 
+export const themes = ['modern', 'elegant', 'bold']
+
 export interface ShopDocument {
     _id: string;
     name: string
@@ -11,12 +13,10 @@ export interface ShopDocument {
         accent: string
     };
     products: Schema.Types.ObjectId[];
-    url: {
-        type: string,
-        unique: true,
-    }
+    url: string,
     tagline: string,
     about: string,
+    active: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -26,8 +26,8 @@ export const ShopSchema = new Schema({
     tagline: String,
     about: String,
     theme: {
-        type: String, enum: ['light', 'dark', 'minimal', 'modern'],
-        default: 'minimal'
+        type: String, enum: themes,
+        default: 'modern'
     },
     colors: {
         primary: {
@@ -44,9 +44,14 @@ export const ShopSchema = new Schema({
         }
     },
     products: {
-        type: [{type: Schema.Types.ObjectId, ref: 'Products'}],
+        type: [{type: Schema.Types.ObjectId, ref: 'Product'}],
         default: []
     },
+    active: { type: Boolean, default: true},
+    url: {
+        type: String,
+        unique: true,
+    }
 }, { timestamps: true }
 );
 
