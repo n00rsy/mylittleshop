@@ -16,10 +16,11 @@ export default async function DashboardLayout({ children }: { children: ReactNod
 
     const userData = await getUserByEmail(session.user?.email)
     console.log("userData", userData)
-    const isStripeOnboarded = isStripeAccountOnboarded(userData.stripe.accountId)
+    const isStripeOnboarded = await isStripeAccountOnboarded(userData.stripe.accountId)
     return (
-        <DashboardProvider>
-            <Dashboard userData={userData} isStripeOnboarded={isStripeOnboarded}>
+        <DashboardProvider initialUserData={userData} initialIsStripeOnboarded={isStripeOnboarded}>
+            {/* TODO: REFACTOR LIKE SHOP PAGE */}
+            <Dashboard>
                 {children}
             </Dashboard>
         </DashboardProvider>

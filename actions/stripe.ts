@@ -51,7 +51,7 @@ export const getStripeAccount = async function (accountId: string) {
     const stripeAccount = await stripe.accounts.retrieve(accountId)
     console.log(stripeAccount)
     console.log(stripeAccount)
-    return stripeAccount.object
+    return stripeAccount
 }
 
 export const isStripeAccountOnboarded = async function (accountId: string) {

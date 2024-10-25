@@ -17,19 +17,18 @@ import { ConnectComponentsProvider } from "@stripe/react-connect-js";
 
 export const PageContext = React.createContext(null);
 
-export default function Dashboard({ userData, isStripeOnboarded, children }: { userData: any, isStripeOnboarded: any, children: ReactNode }) {
-    console.log("dashboard layout function...", userData)
+export default function Dashboard({ children }: { children: ReactNode }) {
+
     const router = useRouter()
     const { data: session, status } = useSession();
     const [activePage, setActivePage] = useState('home')
     const [opened, { toggle }] = useDisclosure();
-    const { setUserData, setActiveShopIndex, setIsStripeOnboarded } = useContext(DashboardContext)
-    setUserData(userData)
-    setIsStripeOnboarded(isStripeOnboarded)
+    const { userData, setActiveShopIndex } = useContext(DashboardContext)
+    console.log("dashboard function...", userData)
 
     const pathname = usePathname();
     let { shopindex } = useParams()
-    shopindex = shopindex || userData.defaultShop || "0"
+    shopindex = shopindex || userData!.defaultShop || "0"
     useEffect(() => {
         console.log(`Route changed to: ${pathname}`);
         const tokens = pathname.split('/')

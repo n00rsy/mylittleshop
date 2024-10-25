@@ -2,7 +2,7 @@
 
 import { createProduct, deleteProduct } from '@/actions/product';
 import { DashboardContext } from '@/context/DashboardContext';
-import { DragDropContext, Draggable, type DropResult, Droppable } from '@hello-pangea/dnd';
+import { type DropResult, Droppable } from '@hello-pangea/dnd';
 import { ActionIcon, Button, Container, Group, Modal, Text, Stack, TableTd, TextInput, Title, Textarea, NumberInput, rem, Box, Paper } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
@@ -49,7 +49,7 @@ const test_products = [
 
 export default function Products() {
 
-    const { userData, setUserData, activeShopIndex } = useContext(DashboardContext)
+    const { userData, activeShopIndex } = useContext(DashboardContext)
     const activeShop = userData.shops[activeShopIndex]
     const [products, setProducts] = useState<any[]>(activeShop.products);
     const [orderChanged, setOrderChanged] = useState(false)

@@ -1,6 +1,5 @@
 'use client';
 
-import { DashboardProvider } from "@/context/DashboardContext";
 import { MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
