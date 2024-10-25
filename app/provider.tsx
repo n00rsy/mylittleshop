@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
 import { DashboardProvider } from "@/context/DashboardContext";
 import { MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
+import { Notifications } from "@mantine/notifications";
 import { SessionProvider } from "next-auth/react";
 
 type Props = {
@@ -14,6 +15,7 @@ export const Provider = ({ children }: Props) => {
     <SessionProvider>
       <MantineProvider>
         <ModalsProvider>
+          <Notifications />
           {children}
         </ModalsProvider>
       </MantineProvider>

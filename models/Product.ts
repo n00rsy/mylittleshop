@@ -3,6 +3,7 @@ import mongoose, { Schema, model } from "mongoose";
 export interface ProductDocument {
     _id: string;
     name: string;
+    urlName: string;
     description: string;
     price: number;
     quantity: number;
@@ -14,6 +15,7 @@ export interface ProductDocument {
 
 export const ProductSchema = new Schema({
     name: { type: String, required: true },
+    urlName: { type: String, required: true },
     description: String,
     price: { type: Number, required: true, min: 0 },
     quantity: { type: Number, default: 0 },

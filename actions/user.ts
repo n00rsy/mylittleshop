@@ -1,8 +1,9 @@
-"use server"
+'use server'
 import { connectDB } from "@/lib/mongodb";
 import User, { UserDocument } from "@/models/User";
 import Shop, {ShopDocument} from "@/models/Shop";
 import bcrypt from "bcryptjs";
+import { createStripeAccount } from "./stripe";
 
 export const register = async (values: any) => {
   const { email, password, name } = values;
@@ -10,7 +11,7 @@ export const register = async (values: any) => {
   const userFound = await User.findOne({ email });
   if (userFound) {
     return {
-      error: 'Email already exists!'
+      error: 'Email Taken! Please sign in.'
     }
   }
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -20,6 +21,9 @@ export const register = async (values: any) => {
     password: hashedPassword,
   });
   await user.save();
+
+  await createStripeAccount(user)
+
 }
 
 export const getUserByEmail = async (email: string) => {

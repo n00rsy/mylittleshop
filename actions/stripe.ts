@@ -4,6 +4,7 @@ import Stripe from 'stripe'
 import { updateUser } from './user'
 
 const stripe = new Stripe(process.env.STRIPE_SECRECT_KEY_TEST!)
+const app_url = process.env.APP_URL
 
 export const createStripeAccount = async function (userData: any) {
     console.log("createStripeAccount", userData)
@@ -20,15 +21,13 @@ export const createStripeAccount = async function (userData: any) {
     }
 
     await updateUser(userData._id, updateDetails)
-
-    return onboardStripeAccount(account.id)
 }
 
-export const onboardStripeAccount = async function (accountId:string) {
+export const onboardStripeAccount = async function (accountId: string) {
     const accountLink = await stripe.accountLinks.create({
         account: accountId,
-        refresh_url: 'http://localhost:3000/stripe/retry',
-        return_url: 'http://localhost:3000/dashboard/0/home',
+        refresh_url: `${app_url}/dashboard/stripe/retry`,
+        return_url: `${app_url}/dashboard/`,
         type: 'account_onboarding'
     })
     console.log('accountlink:', accountLink)
@@ -36,12 +35,12 @@ export const onboardStripeAccount = async function (accountId:string) {
 }
 
 export const updateStripeAccount = async function (userData: any) {
-    console.log("createStripeAccount", userData)
+    console.log("updateStripeAccount", userData)
 
     const accountLink = await stripe.accountLinks.create({
         account: userData.stripe.accountId,
-        refresh_url: 'http://localhost:3000/stripe/retry',
-        return_url: 'http://localhost:3000/stripe/account-updated',
+        refresh_url: `${app_url}/dashboard/stripe/retry`,
+        return_url: `${app_url}/stripe/account-updated`,
         type: 'account_update'
     })
     console.log('accountlink:', accountLink)
@@ -61,4 +60,43 @@ export const isStripeAccountOnboarded = async function (accountId: string) {
     return stripeAccount.charges_enabled &&
         stripeAccount.payouts_enabled &&
         stripeAccount.requirements?.currently_due?.length === 0
+}
+
+export const createStripeLoginLink = async function (accountId: string) {
+    const loginLink = await stripe.accounts.createLoginLink(accountId);
+    return loginLink.url
+}
+
+export const createStripeSession = async function (accountId: string) {
+    try {
+        const accountSession = await stripe.accountSessions.create({
+            account: accountId,
+            components: {
+                payments: {
+                    enabled: true,
+                    features: {
+                        refund_management: true,
+                        dispute_management: true,
+                        capture_payments: true,
+                    }
+                },
+                account_onboarding: {
+                    enabled: true,
+                },
+                account_management: {
+                    enabled: true
+                },
+                payouts: {
+                    enabled: true,
+                },
+                balances: {
+                    enabled: true,
+                },
+            }
+        })
+        return { secret: accountSession.client_secret }
+    }
+    catch (error) {
+        return { error: error }
+    }
 }

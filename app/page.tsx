@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -13,7 +13,7 @@ export default function Landing() {
   useEffect(() => {
     if (status === "authenticated") {
       return (
-        router.push("/dashboard/0/home")
+        router.push("/dashboard/")
       );
     }
   }, [session, status, router])

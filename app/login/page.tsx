@@ -1,5 +1,6 @@
-"use client";
-import {  useState } from "react";
+'use client';
+
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from '@mantine/form';
 import { signIn } from "next-auth/react";
@@ -17,10 +18,12 @@ import {
   Stack,
   Container,
   Center,
+  rem,
 } from '@mantine/core';
 import { GoogleButton } from "@/components/AuthenticationForm/GoogleButton";
 import { TwitterButton } from "@/components/AuthenticationForm/TwitterButton";
 import { FacebookButton } from "@/components/AuthenticationForm/FacebookButton";
+import { IconArrowLeft } from "@tabler/icons-react";
 
 export default function Login() {
 
@@ -59,57 +62,62 @@ export default function Login() {
 
   return (
     <Center
-      style={{height: '100vh'}}
+      style={{ height: '100vh' }}
     >
-    <Container size="xs">
-    <Paper radius="md" p="xl" withBorder shadow="sm">
-      <Text size="lg" fw={500}>
-        Welcome to mylittleshop, continue with
-      </Text>
+      <Stack>
+        <Container size="xs">
+          <Paper radius="md" p="xl" withBorder shadow="sm">
+            <Text size="lg" fw={500}>
+              Welcome to mylittleshop, continue with
+            </Text>
 
-      <Group grow mb="md" mt="md">
-        <GoogleButton radius="xl">Google</GoogleButton>
-        <TwitterButton radius="xl">Twitter</TwitterButton>
-      </Group>
+            <Group grow mb="md" mt="md">
+              <GoogleButton radius="xl">Google</GoogleButton>
+              <TwitterButton radius="xl">Twitter</TwitterButton>
+            </Group>
 
-      <Divider label="Or login with email" labelPosition="center" my="lg" />
+            <Divider label="Or login with email" labelPosition="center" my="lg" />
 
-      <form onSubmit={form.onSubmit((values) => handlesubmit(values.name, values.email, values.password))}>
-        <Stack>
-          <TextInput
-            required
-            label="Email"
-            placeholder="hello@mantine.dev"
-            value={form.values.email}
-            onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
-            error={form.errors.email && 'Invalid email'}
-            radius="md"
-          />
-          <PasswordInput
-            required
-            label="Password"
-            placeholder="Your password"
-            value={form.values.password}
-            onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
-            error={form.errors.password && 'Password should include at least 6 characters'}
-            radius="md"
-          />
-        </Stack>
+            <form onSubmit={form.onSubmit((values) => handlesubmit(values.name, values.email, values.password))}>
+              <Stack>
+                <TextInput
+                  required
+                  label="Email"
+                  placeholder="hello@mantine.dev"
+                  value={form.values.email}
+                  onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
+                  error={form.errors.email && 'Invalid email'}
+                  radius="md"
+                />
+                <PasswordInput
+                  required
+                  label="Password"
+                  placeholder="Your password"
+                  value={form.values.password}
+                  onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
+                  error={form.errors.password && 'Password should include at least 6 characters'}
+                  radius="md"
+                />
+              </Stack>
 
-        <Group justify="space-between" mt="xl">
-          <Anchor c="dimmed" href="/signup" size="xs">
-            Don't have an account? Sign up
-          </Anchor>
-          <Anchor href="/forgotpassword" size="xs" >
-            Forgot password?
-          </Anchor>
-          <Button type="submit" fullWidth mt="xl">
-            Login
-          </Button>
-        </Group>
-      </form>
-    </Paper>
-    </Container>
+              <Group justify="space-between" mt="xl">
+                <Anchor c="dimmed" href="/signup" size="xs">
+                  Don't have an account? Sign up
+                </Anchor>
+                <Anchor href="/forgotpassword" size="xs" >
+                  Forgot password?
+                </Anchor>
+                <Button type="submit" fullWidth mt="xl">
+                  Login
+                </Button>
+              </Group>
+            </form>
+          </Paper>
+        </Container>
+        <Container fluid ta="center">
+          <Anchor href="/"><IconArrowLeft style={{ width: rem(14), height: rem(14) }} />Take me home</Anchor>
+        </Container>
+      </Stack>
     </Center>
   );
 }

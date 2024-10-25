@@ -40,6 +40,7 @@ export default function Settings() {
     const [isEditingDetails, toggleIsEditingDetails] = useToggle();
     const [isEditingStyle, toggleIsEditingStyle] = useToggle();
     const [isEditingDeployment, toggleIsEditingDeployment] = useToggle();
+    const [isEditingContact, toggleIsEditingContact] = useToggle();
 
     const [name, setName] = useState(activeShop.name)
     const [tagline, setTagline] = useState(activeShop.tagline || '')
@@ -81,6 +82,14 @@ export default function Settings() {
 
     const handlesavedeployment = async () => {
         console.log("saving deployment ....")
+        console.log( { _id: activeShop._id, url: url, active: active })
+        const res = await updateShop(userData._id, { _id: activeShop._id, url: url, active: active })
+        console.log(res)
+        toggleIsEditingDetails()
+    }
+
+    const handlesavecontact = async () => {
+        console.log("saving contac....")
         console.log( { _id: activeShop._id, url: url, active: active })
         const res = await updateShop(userData._id, { _id: activeShop._id, url: url, active: active })
         console.log(res)
@@ -260,6 +269,20 @@ export default function Settings() {
             </Table>
 
             <Group justify="flex-start" pb={10}>
+                <Title order={4}>Public Links and Contact</Title>
+                <Box flex={1}></Box>
+                <Button variant="default" onClick={() => toggleIsEditingContact()} >
+                    {isEditingContact == true ? 'Cancel' : 'Edit'}
+                </Button>
+                {isEditingContact == true && (
+                    <Button onClick={() => handlesavecontact()}>
+                        Save
+                    </Button>
+                )}
+            </Group>
+            <Divider />
+
+            <Group justify="flex-start" pb={10}>
                 <Title order={4}>Deployment</Title>
                 <Box flex={1}></Box>
                 <Button variant="default" onClick={() => toggleIsEditingDeployment()} >
@@ -301,10 +324,15 @@ export default function Settings() {
                             />
                         </Table.Td>
                     </Table.Tr>
-
-
                 </Table.Tbody>
             </Table>
+
+            <Group justify="flex-start" pb={10}>
+                <Title order={4}>Danger Zone</Title>
+                <Box flex={1}></Box>
+            </Group>
+            <Divider />
+            <Button color="red">Delete Shop</Button>
 
         </Container>
     )

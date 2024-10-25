@@ -9,10 +9,11 @@ export interface UserDocument {
   image: string;
   createdAt: Date;
   updatedAt: Date;
-  tier: string
-  shops: Schema.Types.ObjectId[]
+  tier: string;
+  shops: Schema.Types.ObjectId[];
+  defaultShop: Schema.Types.ObjectId;
   stripe: {
-    accountId: string
+    accountId: string;
   }
 }
 
@@ -45,7 +46,8 @@ const UserSchema = new Schema<UserDocument>({
   },
   stripe: {
     accountId: String
-  }
+  },
+  defaultShop: {type: Schema.Types.ObjectId, ref: 'Shop'}
 },
 {
   timestamps: true,

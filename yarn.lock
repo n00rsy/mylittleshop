@@ -2023,6 +2023,16 @@
   resolved "https://artprod.dev.bloomberg.com/artifactory/api/npm/npm-repos/@storybook/theming/-/theming-8.3.4.tgz"
   integrity sha512-D4XVsQgTtpHEHLhwkx59aGy1GBwOedVr/mNns7hFrH8FjEpxrrWCuZQASq1ZpCl8LXlh7uvmT5sM2rOdQbGuGg==
 
+"@stripe/connect-js@^3.3.16":
+  version "3.3.16"
+  resolved "https://artprod.dev.bloomberg.com/artifactory/api/npm/npm-repos/@stripe/connect-js/-/connect-js-3.3.16.tgz"
+  integrity sha512-lMUKJJaDl6qzjp+czNn+N6wMwFXwLawmB2jNNgds8SeR+bXCVCXevzJ8dfF92KfmexKg++hBYagF9e99sEMBJQ==
+
+"@stripe/react-connect-js@^3.3.17":
+  version "3.3.17"
+  resolved "https://artprod.dev.bloomberg.com/artifactory/api/npm/npm-repos/@stripe/react-connect-js/-/react-connect-js-3.3.17.tgz"
+  integrity sha512-uxCh6ACcSWS/t0kBeqvvRieBI9pRxh2rPxt6NpjrTg3Ft1ZDleUfg9OAjkfoOT3Ta+FTomouA19l2ju7If2h5A==
+
 "@stripe/stripe-js@^4.8.0":
   version "4.8.0"
   resolved "https://artprod.dev.bloomberg.com/artifactory/api/npm/npm-repos/@stripe/stripe-js/-/stripe-js-4.8.0.tgz"

@@ -1,4 +1,4 @@
-"use server"
+'use server'
 import { connectDB } from "@/lib/mongodb";
 import Shop from "@/models/Shop";
 import  User from "@/models/User";

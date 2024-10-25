@@ -1,7 +1,7 @@
 
 'use client'
 import { redirect, useParams } from "next/navigation";
-import { IconBuildingWarehouse, IconHome, IconHome2, IconLogout, IconSettings } from '@tabler/icons-react';
+import { IconBuildingWarehouse, IconHome, IconHome2, IconLogout, IconSettings, IconTruckDelivery } from '@tabler/icons-react';
 import { Text, Stack, AppShell, Title, Burger, Group, Center, NavLink, Loader, Button, Container, Box, Avatar, Menu, rem, Anchor } from '@mantine/core';
 import { upperFirst, useDisclosure } from '@mantine/hooks';
 import React, { ForwardRefExoticComponent, ReactNode, useContext, useEffect, useState } from "react";
@@ -14,17 +14,19 @@ import { useRouter } from "next/navigation";
 
 export const PageContext = React.createContext(null);
 
-export default function DashboardAppShellLayout({ userData, children }: { userData: any, children: ReactNode }) {
+export default function DashboardAppShellLayout({ userData, stripeData, children }: { userData: any, stripeData: any, children: ReactNode }) {
     console.log("dashboard layout function...", userData)
     const router = useRouter()
     const { data: session, status } = useSession();
     const [activePage, setActivePage] = useState('home')
     const [opened, { toggle }] = useDisclosure();
-    const { setUserData, setActiveShopIndex } = useContext(DashboardContext)
+    const { setUserData, setActiveShopIndex, setStripeData } = useContext(DashboardContext)
     setUserData(userData)
+    setStripeData(stripeData)
 
     const pathname = usePathname();
-    const {shopindex} = useParams()
+    let {shopindex} = useParams()
+    shopindex = shopindex || "0"
     useEffect(() => {
         console.log(`Route changed to: ${pathname}`);
         const tokens = pathname.split('/')
@@ -48,7 +50,7 @@ export default function DashboardAppShellLayout({ userData, children }: { userDa
         icon: ForwardRefExoticComponent<any>
     }
 
-    const pages:Page[] = [{title:'home', icon: IconHome}, {title: 'products', icon: IconBuildingWarehouse}, {title: 'orders', icon: IconHome}, {title:'settings', icon: IconSettings}]
+    const pages:Page[] = [{title:'home', icon: IconHome}, {title: 'products', icon: IconBuildingWarehouse}, {title: 'orders', icon: IconTruckDelivery}, {title:'settings', icon: IconSettings}]
 
     const navlinks = pages.map((page) => {
         return (<NavLink

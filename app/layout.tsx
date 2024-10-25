@@ -3,7 +3,6 @@ import 'mantine-datatable/styles.layer.css';
 
 import React from 'react';
 import { ColorSchemeScript } from '@mantine/core';
-
 import { Provider } from "./provider";
 
 export const metadata = {

@@ -3,6 +3,11 @@ import { ProductSchema } from "./Product";
 
 export const themes = ['modern', 'elegant', 'bold']
 
+export interface ContactLink {
+    type: string;
+    value: string;
+}
+
 export interface ShopDocument {
     _id: string;
     name: string
@@ -19,6 +24,7 @@ export interface ShopDocument {
     active: boolean;
     createdAt: Date;
     updatedAt: Date;
+    contactLinks: ContactLink[]
 }
 
 export const ShopSchema = new Schema({
@@ -44,14 +50,28 @@ export const ShopSchema = new Schema({
         }
     },
     products: {
-        type: [{type: Schema.Types.ObjectId, ref: 'Product'}],
+        type: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
         default: []
     },
-    active: { type: Boolean, default: true},
+    active: { type: Boolean, default: true },
     url: {
         type: String,
         unique: true,
-    }
+    },
+    contactLinks: [
+        {
+            type: {
+                type: String,
+                enum: ['phone', 'address', 'email', 'instagram', 'website', 'facebook', 'twitter', 'linkedin', 'youtube', 'tiktok', 'discord', 'whatsapp'],
+                required: true
+            },
+            value: {
+                type: String,
+                required: true
+            }
+
+        }
+    ]
 }, { timestamps: true }
 );
 

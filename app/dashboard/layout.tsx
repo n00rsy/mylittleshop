@@ -5,6 +5,7 @@ import { ReactNode, useContext } from "react";
 import { redirect } from "next/navigation";
 import { getUserByEmail } from "@/actions/user";
 import { DashboardProvider } from "@/context/DashboardContext";
+import { getStripeAccount } from "@/actions/stripe";
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
     console.log("dashboard layout function...")
@@ -14,13 +15,17 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     }
 
     const userData = await getUserByEmail(session.user?.email)
-    // TODO: GET STRIPE ACCOUNT INFO
-    // TODO: default shop
-    console.log("newUserData", userData)
+    console.log("userData", userData)
+    let stripeData = undefined
+    if (userData!.stripe) {
+        console.log("Getting stripe data...")
+        stripeData = await getStripeAccount(userData.stripe.accountId)
+        console.log("stripeData:", stripeData)
+    }
 
     return (
         <DashboardProvider>
-            <DashboardAppShellLayout userData={userData}>
+            <DashboardAppShellLayout userData={userData} stripeData={stripeData}>
                 {children}
             </DashboardAppShellLayout>
         </DashboardProvider>
