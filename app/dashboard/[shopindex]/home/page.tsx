@@ -12,7 +12,7 @@ import {
     ConnectAccountManagement,
 } from "@stripe/react-connect-js";
 export default function Home() {
-    const { userData, setUserData, activeShopIndex, stripeData } = useContext(DashboardContext)
+    const { userData, setUserData, activeShopIndex } = useContext(DashboardContext)
     const activeShop = userData.shops[activeShopIndex]
     const router = useRouter()
 
@@ -26,32 +26,6 @@ export default function Home() {
         }
         getStripeOnboarded()
     }, [])
-
-    const [stripeConnectInstance] = useState(() => {
-        const fetchClientSecret = async () => {
-            // Fetch the AccountSession client secret
-            const response = await createStripeSession(userData.stripe.accountId)
-            if (response.error || !response.secret) {
-                console.log('An error occurred: ', response.error);
-                return 'undefined';
-            } else {
-                return response.secret
-            }
-        }
-
-        return loadConnectAndInitialize({
-            // This is your test publishable API key.
-
-            publishableKey: "pk_test_51Q8XYOBVzl031WfEm2up9ZUe7p5haysZ0M2DkbwWvrbVqqZndl80lbJ95eT0HXOL3Noie6h3qbALiWvrhgku9cqH00IavQKXrZ",
-            fetchClientSecret: fetchClientSecret || '',
-            appearance: {
-                overlays: 'dialog',
-                variables: {
-                    colorPrimary: '#625afa',
-                },
-            },
-        })
-    });
 
     const handleeditstripe = async () => {
         console.log("requesting edit stripe...")
@@ -75,9 +49,8 @@ export default function Home() {
     }
 
     return (
-        <ConnectComponentsProvider connectInstance={stripeConnectInstance}>
-            <ConnectPayments />
-            <ConnectAccountManagement />
+            // <ConnectPayments />
+            // <ConnectAccountManagement />
         <Center style={{ height: '50vh' }}>
             <Container>
                 <Stack>
@@ -92,6 +65,5 @@ export default function Home() {
                 </Stack>
             </Container>
         </Center>
-        </ConnectComponentsProvider>
     );
 }

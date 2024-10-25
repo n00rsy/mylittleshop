@@ -5,7 +5,7 @@ import { Anchor, AppShell, Badge, Box, Button, Card, Center, Container, Divider,
 import { useDisclosure } from "@mantine/hooks";
 import { IconAt, IconBasket, IconBrandFacebook, IconBrandInstagram } from "@tabler/icons-react";
 
-export default function ShopLayout({ shopData }: { shopData: any }) {
+export default function ShopPage({ shopData }: { shopData: any }) {
 
     console.log(shopData.products)
 

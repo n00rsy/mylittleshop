@@ -1,11 +1,11 @@
 
 import { getServerSession } from "next-auth";
-import DashboardAppShellLayout from "./AppShellLayout";
+import Dashboard from "./Dashboard";
 import { ReactNode, useContext } from "react";
 import { redirect } from "next/navigation";
 import { getUserByEmail } from "@/actions/user";
 import { DashboardProvider } from "@/context/DashboardContext";
-import { getStripeAccount } from "@/actions/stripe";
+import { getStripeAccount, isStripeAccountOnboarded } from "@/actions/stripe";
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
     console.log("dashboard layout function...")
@@ -16,18 +16,12 @@ export default async function DashboardLayout({ children }: { children: ReactNod
 
     const userData = await getUserByEmail(session.user?.email)
     console.log("userData", userData)
-    let stripeData = undefined
-    if (userData!.stripe) {
-        console.log("Getting stripe data...")
-        stripeData = await getStripeAccount(userData.stripe.accountId)
-        console.log("stripeData:", stripeData)
-    }
-
+    const isStripeOnboarded = isStripeAccountOnboarded(userData.stripe.accountId)
     return (
         <DashboardProvider>
-            <DashboardAppShellLayout userData={userData} stripeData={stripeData}>
+            <Dashboard userData={userData} isStripeOnboarded={isStripeOnboarded}>
                 {children}
-            </DashboardAppShellLayout>
+            </Dashboard>
         </DashboardProvider>
     )
 }
