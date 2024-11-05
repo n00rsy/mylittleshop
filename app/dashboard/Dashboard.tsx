@@ -1,8 +1,9 @@
 
 'use client'
+
 import { redirect, useParams } from "next/navigation";
 import { IconBuildingWarehouse, IconHome, IconHome2, IconLogout, IconSettings, IconTruckDelivery } from '@tabler/icons-react';
-import { Text, Stack, AppShell, Title, Burger, Group, Center, NavLink, Loader, Button, Container, Box, Avatar, Menu, rem, Anchor } from '@mantine/core';
+import { Text, Stack, AppShell, Title, Burger, Group, Center, NavLink, Loader, Button, Container, Box, Avatar, Menu, rem, Anchor, createTheme } from '@mantine/core';
 import { upperFirst, useDisclosure } from '@mantine/hooks';
 import React, { ForwardRefExoticComponent, ReactNode, useContext, useEffect, useState } from "react";
 
@@ -15,8 +16,6 @@ import { createStripeSession } from "@/actions/stripe";
 import { loadConnectAndInitialize } from "@stripe/connect-js";
 import { ConnectComponentsProvider } from "@stripe/react-connect-js";
 
-export const PageContext = React.createContext(null);
-
 export default function Dashboard({ children }: { children: ReactNode }) {
 
     const router = useRouter()
@@ -28,41 +27,55 @@ export default function Dashboard({ children }: { children: ReactNode }) {
 
     const pathname = usePathname();
     let { shopindex } = useParams()
-    shopindex = shopindex || userData!.defaultShop || "0"
+    const shopi = Number(shopindex || userData!.defaultShop || "0")
     useEffect(() => {
+
         console.log(`Route changed to: ${pathname}`);
         const tokens = pathname.split('/')
         console.log('setting active page: ', tokens[2])
         setActivePage(tokens[3])
+        setActiveShopIndex((shopi))
+        if (userData.shops.length > 0) {
+            if (shopi >= userData.shops.length) {
+                router.push('/404')
+            }
+            // console.log('userData.shops[shopi].colors.primary', userData.shops[shopi].colors.primary)
+            // if (userData.shops[shopi].colors.primary) {
+            //     console.log("creating theme...")
+
+            //     //setTheme(theme)
+            // }
+        }
     }, [pathname]);
 
     console.log("shopindex: ", shopindex)
-    if (shopindex >= userData.shops.length && userData.shops.length > 0) {
-        router.push('/404')
-    }
-    setActiveShopIndex(Number(shopindex))
 
     const [stripeConnectInstance] = useState(() => {
         const fetchClientSecret = async () => {
             // Fetch the AccountSession client secret
-            const response = await createStripeSession(userData.stripe.accountId)
-            if (response.error || !response.secret) {
-                console.log('An error occurred: ', response.error);
+            const response = await fetch(`/api/stripesession?id=${userData.stripe.accountId}`)
+            const data = await response.json()
+            console.log("fetchClientSecret", data)
+            if (data.error || !data.secret) {
+                console.log('An error occurred: ', data.error);
                 return 'undefined';
             } else {
-                return response.secret
+                return data.secret
             }
         }
+        let appearance = {
+            overlays: 'dialog',
 
+        }
+        if (userData.shops[shopi].styles.primaryColor) {
+            appearance['variables'] = {
+                colorPrimary: userData.shops[shopi].styles.primaryColor,
+            }
+        }
         return loadConnectAndInitialize({
             publishableKey: "pk_test_51Q8XYOBVzl031WfEm2up9ZUe7p5haysZ0M2DkbwWvrbVqqZndl80lbJ95eT0HXOL3Noie6h3qbALiWvrhgku9cqH00IavQKXrZ",
             fetchClientSecret: fetchClientSecret,
-            appearance: {
-                overlays: 'dialog',
-                variables: {
-                    colorPrimary: '#625afa',
-                },
-            },
+            appearance: appearance
         })
     });
 

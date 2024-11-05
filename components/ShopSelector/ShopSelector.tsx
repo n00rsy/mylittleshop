@@ -11,7 +11,7 @@ export default function ShopSelector({ shops, activePage, activeShopIndex }: { s
         </Menu.Item>
     )})
 
-    if (shops.length > 0) {
+    if (shops.length > 0 && activeShopIndex != null) {
 
         return (<Menu shadow="md" width={200}>
             <Menu.Target>

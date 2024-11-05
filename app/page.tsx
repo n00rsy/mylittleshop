@@ -3,7 +3,7 @@ import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { IconHome2, IconGauge, IconChevronRight, IconActivity, IconCircleOff } from '@tabler/icons-react';
-import { Text, AppShell, Burger, Group, Skeleton, NavLink, Loader, Button, Anchor, Container, Title, Flex, Center } from '@mantine/core';
+import { Text, AppShell, Burger, Group, Skeleton, NavLink, Loader, Button, Anchor, Container, Title, Flex, Center, MantineProvider } from '@mantine/core';
 import { useEffect } from "react";
 
 export default function Landing() {

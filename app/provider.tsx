@@ -1,9 +1,11 @@
 'use client';
 
+import { ThemeProvider } from "@/context/ThemeContext";
 import { MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
 import { SessionProvider } from "next-auth/react";
+import MantineThemeProvider from "./MantineThemeProvider";
 
 type Props = {
   children?: React.ReactNode;
@@ -12,11 +14,11 @@ type Props = {
 export const Provider = ({ children }: Props) => {
   return (
     <SessionProvider>
-      <MantineProvider>
+      {/* <MantineThemeProvider>
         <ModalsProvider>
-          <Notifications />
+          <Notifications /> */}
           {children}
-        </ModalsProvider>
-      </MantineProvider>
+        {/* </ModalsProvider>
+      </MantineThemeProvider> */}
     </SessionProvider>);
 };

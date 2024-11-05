@@ -1,7 +1,6 @@
 'use client';
 
 import { createProduct, createProductWithoutDb, deleteProduct } from '@/actions/product';
-import { DashboardContext } from '@/context/DashboardContext';
 import { DragDropContext, Draggable, type DropResult, Droppable } from '@hello-pangea/dnd';
 import { ActionIcon, Button, Container, Group, Modal, Text, Stack, TableTd, TextInput, Title, Textarea, NumberInput, rem, Box, Paper, Center } from '@mantine/core';
 import { useForm } from '@mantine/form';
@@ -22,14 +21,15 @@ interface RecordData {
 
 
 export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, s_id?: string, p?: any, save: boolean }) {
-
-    // const { userData, setUserData, activeShopIndex } = useContext(DashboardContext)
-    //const activeShop = userData.shops[activeShopIndex]
     const [products, setProducts] = useState<any[]>(p || []);
     const [orderChanged, setOrderChanged] = useState(false)
     const [createModalOpened, { open, close }] = useDisclosure(false);
     const [urlEdited, setUrlEdited] = useState(false)
 
+
+    // TODO: add collapse w advanced settings: quanitity limit, https://mantine.dev/core/collapse/#usage
+    // product options: size, color, custom
+    // image uploads
     const form = useForm({
         initialValues: {
             name: '',
@@ -91,11 +91,8 @@ export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, 
         form.setFieldValue('urlName', urlstrip(value))
     }
 
-
-
     const urlstrip = (input: string) => {
-        console.log("urlstrip", input)
-        return input.replace(/[^a-zA-Z0-9]/g, '')
+        return input.replace(/[^a-zA-Z0-9]/g, '').toLowerCase()
     }
 
     const confirmDeleteModal = (product: any) =>

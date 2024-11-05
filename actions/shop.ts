@@ -12,10 +12,11 @@ export const createShop = async (shop: any, u_id: string) => {
       return {error: `website url taken!`}
     }
     const newShop = new Shop(shop);
+
     const savedShop = await newShop.save();
     user.shops.push([savedShop._id])
     await user.save()
-    return savedShop.lean()
+    return savedShop.toObject()
   }
 
   export const updateShop = async (u_id: string, shop: any) => {

@@ -4,39 +4,12 @@ import { Button, Divider, Input, Text, Group, TextInput, Title, Container, Table
 import { useContext, useState } from "react"
 import { upperFirst, useToggle } from '@mantine/hooks';
 import { updateShop } from "@/actions/shop";
-import { themes } from "@/models/Shop";
+import { themes, colorSchemes } from "@/models/Shop";
 
 export default function Settings() {
-    const { userData, setUserData, activeShopIndex } = useContext(DashboardContext)
+    const { userData, activeShopIndex } = useContext(DashboardContext)
     const activeShop = userData.shops[activeShopIndex]
-    // const { name, theme, colors } = userData.shops[activeShopIndex]
-    // const short_description = "this is my shop that sells books. please buy them"
-    // const about = "Welcome to homemade. What does homemade mean to you? Is it something you cook or make for your family or the time with family or smells that build the memories? When I started this homemade baking business in April of 2012, it was with the idea that everything would be made from scratch.  Mainly because of my own memories in the kitchen of cooking with my family. Coming from a big family, everything was made from scratch so never in a million years did I imagined how much fun I was going to have baking for my community.  When I say baked from scratch, I mean that I use basic ingredients from start to finish. I make buttercream frosting with real butter and our custom cakes, cinnamon rolls, and cookies made completely from scratch with farm-fresh local eggs and real butter. If you have questions about any ingredient please feel free to ask. "
 
-    // const properties = {
-    //     "Visual": [
-    //         {
-    //             "name": "Theme",
-    //             "document_mapping": "theme",
-    //             "initial_value": theme
-    //         },
-    //         {
-    //             "name": "Primary Color",
-    //             "document_mapping": "colors.primary_color",
-    //             "initial_value": colors.primary_color
-    //         },
-    //         {
-    //             "name": "Secondary",
-    //             "document_mapping": "theme",
-    //             "initial_value": colors.primary
-    //         },
-    //         {
-    //             "name": "theme",
-    //             "document_mapping": "theme",
-    //             "initial_value": colors.primary_color
-    //         }
-    //     ]
-    // }
     const [isEditingDetails, toggleIsEditingDetails] = useToggle();
     const [isEditingStyle, toggleIsEditingStyle] = useToggle();
     const [isEditingDeployment, toggleIsEditingDeployment] = useToggle();
@@ -46,10 +19,9 @@ export default function Settings() {
     const [tagline, setTagline] = useState(activeShop.tagline || '')
     const [about, setAbout] = useState(activeShop.about || '')
 
-    const [theme, setTheme] = useState(activeShop.theme)
-    const [primaryColor, setPrimaryColor] = useState(activeShop.colors.primary)
-    const [secondaryColor, setSecondaryColor] = useState(activeShop.colors.secondary)
-    const [accentColor, setAccentColor] = useState(activeShop.colors.accent)
+    const [theme, setTheme] = useState(activeShop.styles.theme)
+    const [primaryColor, setPrimaryColor] = useState(activeShop.styles.primaryColor)
+    const [colorScheme, setColorScheme] = useState(activeShop.styles.colorScheme)
 
     const [url, setUrl] = useState(activeShop.url)
     const [active, setActive] = useState(activeShop.active)
@@ -57,6 +29,11 @@ export default function Settings() {
     const themeOptions = themes.map(theme => ({
         label: upperFirst(theme),
         value: theme
+    }))
+
+    const colorSchemeOptions = colorSchemes.map(colorScheme => ({
+        label: upperFirst(colorScheme),
+        value: colorScheme
     }))
 
     const handlesavedetails = async () => {
@@ -69,20 +46,21 @@ export default function Settings() {
     const handlesavestyle = async () => {
         console.log("saving style....")
 
-        const colors = {
-            primary: primaryColor,
-            secondary: secondaryColor,
-            accent: accentColor
+        const styles = {
+            theme: theme,
+            colorScheme: colorScheme,
+            primaryColor: primaryColor,
         }
-        console.log({ _id: activeShop._id, theme: theme, colors: colors })
-        const res = await updateShop(userData._id, { _id: activeShop._id, theme: theme, colors: colors })
+
+        console.log({ _id: activeShop._id, styles: styles })
+        const res = await updateShop(userData._id, { _id: activeShop._id, styles: styles })
         console.log(res)
         toggleIsEditingStyle()
     }
 
     const handlesavedeployment = async () => {
         console.log("saving deployment ....")
-        console.log( { _id: activeShop._id, url: url, active: active })
+        console.log({ _id: activeShop._id, url: url, active: active })
         const res = await updateShop(userData._id, { _id: activeShop._id, url: url, active: active })
         console.log(res)
         toggleIsEditingDetails()
@@ -90,7 +68,7 @@ export default function Settings() {
 
     const handlesavecontact = async () => {
         console.log("saving contac....")
-        console.log( { _id: activeShop._id, url: url, active: active })
+        console.log({ _id: activeShop._id, url: url, active: active })
         const res = await updateShop(userData._id, { _id: activeShop._id, url: url, active: active })
         console.log(res)
         toggleIsEditingDetails()
@@ -204,6 +182,24 @@ export default function Settings() {
                         </Table.Td>
                     </Table.Tr>
 
+                    <Table.Tr key="colorScheme">
+                        <Table.Td><strong>Color Scheme</strong></Table.Td>
+                        <Table.Td>
+                            <Select
+                                data={colorSchemeOptions}
+                                value={colorScheme}
+                                onChange={(_value) => setColorScheme(_value)}
+                                readOnly={!isEditingStyle}
+                                variant={isEditingStyle ? 'default' : 'unstyled'}
+                                styles={{
+                                    input: {
+                                        padding: 10
+                                    }
+                                }}
+                            />
+                        </Table.Td>
+                    </Table.Tr>
+
                     <Table.Tr key="primarycolor">
                         <Table.Td><strong>Primary Color</strong></Table.Td>
                         <Table.Td>
@@ -223,46 +219,6 @@ export default function Settings() {
 
                             }
 
-                        </Table.Td>
-                    </Table.Tr>
-
-                    <Table.Tr key="secondarycolor">
-                        <Table.Td><strong>Secondary Color</strong></Table.Td>
-                        <Table.Td>
-                            {!isEditingStyle ? (
-                                <ColorSwatch color={secondaryColor} />
-                            ) :
-
-                                (
-                                    <ColorPicker
-                                        value={secondaryColor}
-                                        onChange={setSecondaryColor}
-                                        // readOnly={!isEditingDetails}
-                                        variant={isEditingDetails ? 'default' : 'unstyled'}
-
-                                    />
-                                )
-                            }
-                        </Table.Td>
-                    </Table.Tr>
-
-                    <Table.Tr key="accentcolor">
-                        <Table.Td><strong>Accent Color</strong></Table.Td>
-                        <Table.Td>
-                            {!isEditingStyle ? (
-                                <ColorSwatch color={accentColor} />
-                            ) :
-
-                                (
-                                    <ColorPicker
-                                        value={accentColor}
-                                        onChange={setAccentColor}
-                                        // readOnly={!isEditingDetails}
-                                        variant={isEditingDetails ? 'default' : 'unstyled'}
-
-                                    />
-                                )
-                            }
                         </Table.Td>
                     </Table.Tr>
                 </Table.Tbody>

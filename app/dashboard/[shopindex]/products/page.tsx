@@ -20,33 +20,6 @@ interface RecordData {
     quantity: number;
 }
 
-const test_products = [
-    {
-        "id": "13-8de2-6f934969a0f1",
-        "name": "Candy Bar",
-        "description": "21716 Ratke Drive",
-        "price": 101.50,
-        "quantity": 1000,
-        "images": "bruh idk"
-    },
-    {
-        "id": "1323addd-a4ac-4dd2-8de2-6f934969a0f1",
-        "name": "Elephant",
-        "description": "elephant, (family Elephantidae), largest living land animal, characterized by its long trunk (elongated upper lip and nose), columnar legs, and huge head with temporal glands and wide, flat ears. Elephants are grayish to brown in colour, and their body hair is sparse and coarse. They are found most often in savannas, grasslands, and forests but occupy a wide range of habitats, including deserts, swamps, and highlands in tropical and subtropical regions of Africa and Asia.",
-        "price": 9999.99,
-        "quantity": 5,
-        "images": "bruh idk"
-    },
-    {
-        "id": "1323addd-e2-6f934969a0f1",
-        "name": "Pineapple",
-        "description": "a healthy fruit for your needs.",
-        "price": 10.99,
-        "quantity": 300,
-        "images": "bruh idk"
-    },
-]
-
 export default function Products() {
 
     const { userData, activeShopIndex } = useContext(DashboardContext)

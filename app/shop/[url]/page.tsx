@@ -24,8 +24,8 @@ export default function ShopPage() {
                         />
                     </Card.Section>
 
-                    <Title order={5}>{product.name}</Title>
-                    <Title order={6}>
+                    <Text >{product.name}</Text>
+                    <Title style={{color: 'var(--mantine-color-gray-8)'}} order={6}>
                         ${product.price}
                     </Title>
                 </Card>
@@ -34,38 +34,24 @@ export default function ShopPage() {
     })
 
     const [opened, { toggle }] = useDisclosure();
+
     return (
-        <AppShell
-            header={{ height: 60 }}
-            padding={200}
-            style={{
-
-
-            }}
-        >
-            <AppShell.Header style={{ backgroundColor: shopData.colors.primary }}>
-                <Center w="100%" h="100%" pr={20} pl={20}>
-                    <Group justify="flex-start" w="100%" h="100%">
-                        <Title pl={50}>{shopData.name}</Title>
-                        <Box flex={1}></Box>
-                        <Button color={shopData.colors.accent}><IconBasket /></Button>
-                    </Group>
-                </Center>
-
-            </AppShell.Header>
-
-            <Container pt={100}>
+            <Container>
                 <Title order={3}>This is where you get books.</Title>
                 <Text>{shopData.about}</Text>
                 <Divider my="lg" ></Divider>
-                <Flex
+                {cards.length !== 0 ? (<Flex
                     direction={{ base: 'column', xs: 'row' }}
                     gap={{ base: 'xs', xs: 'lg' }}
                     justify={{ sm: 'center' }}
                     wrap="wrap"
                 >
                     {cards}
-                </Flex>
+                </Flex>) :
+                (
+                    <Center>No Products Available!</Center>
+                )
+            }
                 <Divider my="lg" ></Divider>
                 <Center ta="center" pb={50}>
                     <Stack>
@@ -85,16 +71,13 @@ export default function ShopPage() {
                         </Group>
 
                         <Text>
-                            built with <Anchor style={{ color: shopData.colors.accent }} href='https://simplestorefront.io'>simplestorefront.io</Anchor>
+                            built with <Anchor style={{ color: shopData.styles.primaryColor }} href='https://simplestorefront.io'>simplestorefront.io</Anchor>
                         </Text>
 
 
                     </Stack>
                 </Center>
             </Container>
-            {/* {JSON.stringify(shopData)} */}
-            <AppShell.Footer>
-            </AppShell.Footer>
-        </AppShell >
+
     )
 }

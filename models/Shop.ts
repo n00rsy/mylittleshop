@@ -1,7 +1,7 @@
 import mongoose, { Schema, model } from "mongoose";
-import { ProductSchema } from "./Product";
 
 export const themes = ['modern', 'elegant', 'bold']
+export const colorSchemes = ['light', 'dark']
 
 export interface ContactLink {
     type: string;
@@ -10,13 +10,13 @@ export interface ContactLink {
 
 export interface ShopDocument {
     _id: string;
-    name: string
-    theme: string;
-    colors: {
-        primary: string,
-        secondary: string,
-        accent: string
-    };
+    name: string;
+    styles: {
+        theme: string;
+        primaryColor: string;
+        mantineColor: string[];
+        colorScheme: string;
+    }
     products: Schema.Types.ObjectId[];
     url: string,
     tagline: string,
@@ -31,29 +31,28 @@ export const ShopSchema = new Schema({
     name: String,
     tagline: String,
     about: String,
-    theme: {
-        type: String, enum: themes,
-        default: 'modern'
-    },
-    colors: {
-        primary: {
+    styles: {
+        primaryColor: {
             type: String,
-            default: '#000000'
+            default: '#4c5897'
         },
-        secondary: {
-            type: String,
-            default: '#FFFFFF'
+        mantineColor: {
+            type: [String]
         },
-        accent: {
-            type: String,
-            default: '#FF0000'
+        colorScheme: {
+            type: String, enum: colorSchemes,
+            default: 'light'
+        },
+        theme: {
+            type: String, enum: themes,
+            default: 'modern'
         }
     },
     products: {
         type: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
         default: []
     },
-    active: { type: Boolean, default: true },
+    active: { type: Boolean, default: false },
     url: {
         type: String,
         unique: true,
@@ -69,7 +68,6 @@ export const ShopSchema = new Schema({
                 type: String,
                 required: true
             }
-
         }
     ]
 }, { timestamps: true }

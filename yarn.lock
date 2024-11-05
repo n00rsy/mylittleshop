@@ -1485,6 +1485,11 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
+"@mantine/colors-generator@^7.13.4":
+  version "7.13.4"
+  resolved "https://artprod.dev.bloomberg.com/artifactory/api/npm/npm-repos/@mantine/colors-generator/-/colors-generator-7.13.4.tgz"
+  integrity sha512-ICHZpopi8+1i6+tDknQp/OUzyzhxs/SSAjJEHWrim/1BWtb8Ez9hHupRTjhOVpYMX9yV6EPsDcU4Gla6u3KoyQ==
+
 "@mantine/core@7.13.0":
   version "7.13.0"
   resolved "https://artprod.dev.bloomberg.com/artifactory/api/npm/npm-repos/@mantine/core/-/core-7.13.0.tgz"
@@ -3623,6 +3628,11 @@ chokidar@^3.5.3:
     readdirp "~3.6.0"
   optionalDependencies:
     fsevents "~2.3.2"
+
+chroma-js@^3.1.2:
+  version "3.1.2"
+  resolved "https://artprod.dev.bloomberg.com/artifactory/api/npm/npm-repos/chroma-js/-/chroma-js-3.1.2.tgz"
+  integrity sha512-IJnETTalXbsLx1eKEgx19d5L6SRM7cH4vINw/99p/M11HCuXGRWL+6YmCm7FWFGIo6dtWuQoQi1dc5yQ7ESIHg==
 
 chrome-trace-event@^1.0.2:
   version "1.0.4"

@@ -1,7 +1,8 @@
 import { getShopByUrl } from "@/actions/shop";
-import ShopLayout from "../ShopLayout";
 import { ShopProvider } from "@/context/ShopContext";
 import { redirect } from "next/navigation";
+import ShopLayout from "../ShopLayout";
+import { MantineProvider } from "@mantine/core";
 
 export default async function Layout({ params, children }: { params: any, children: any }) {
 
@@ -11,8 +12,12 @@ export default async function Layout({ params, children }: { params: any, childr
         redirect('/404')
     }
     return (
-        <ShopProvider initialShopData={shopData}>
-                {children}
-        </ShopProvider>
+        <MantineProvider>
+            <ShopProvider initialShopData={shopData}>
+                <ShopLayout shopData={shopData}>
+                    {children}
+                </ShopLayout>
+            </ShopProvider>
+        </MantineProvider>
     )
 }
