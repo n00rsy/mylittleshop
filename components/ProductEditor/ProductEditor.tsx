@@ -2,7 +2,7 @@
 
 import { createProduct, createProductWithoutDb, deleteProduct } from '@/actions/product';
 import { DragDropContext, Draggable, type DropResult, Droppable } from '@hello-pangea/dnd';
-import { ActionIcon, Button, Container, Group, Modal, Text, Stack, TableTd, TextInput, Title, Textarea, NumberInput, rem, Box, Paper, Center } from '@mantine/core';
+import { ActionIcon, Button, Container, Group, Modal, Text, Stack, Table, TableTd, TextInput, Title, Textarea, NumberInput, rem, Box, Paper, Center, Checkbox, Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
 import { IconCurrencyDollar, IconEdit, IconEye, IconGripVertical, IconPhoto, IconPlus, IconTrash, IconUpload, IconX } from '@tabler/icons-react';
@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { modals } from '@mantine/modals';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 
-interface RecordData {
+interface ProductRecordData {
     _id: string;
     name: string;
     description: string;
@@ -19,6 +19,12 @@ interface RecordData {
     quantity: number;
 }
 
+interface VariationRecordData {
+    _id: string;
+    name: string;
+    price: number;
+    quantity: number;
+}
 
 export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, s_id?: string, p?: any, save: boolean }) {
     const [products, setProducts] = useState<any[]>(p || []);
@@ -26,6 +32,41 @@ export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, 
     const [createModalOpened, { open, close }] = useDisclosure(false);
     const [urlEdited, setUrlEdited] = useState(false)
 
+    const [useVariations, setUseVariations] = useState(false)
+    const [useInventory, setUseInventory] = useState(false)
+    const [useShipping, setUseShipping] = useState(false)
+
+    const [variations, setVariations] = useState<any[]>(p || []);
+    const [variationName, setVariationName] = useState<any[]>(p || []);
+    const [variationOptionName, setVariationOptionName] = useState("")
+    const [variationOptionPrice, setVariationOptionPrice] = useState(0)
+    const [variationOptionQuantity, setVariationOptionQuantity] = useState(0)
+
+    const variationsPresets = [
+        {
+            name: "Size",
+            variations: [
+                "Small", "Medium", "Large", "X-Large"
+            ]
+        },
+        {
+            name: "Color",
+            variations: [
+                "Red", "Green", "Blue"
+            ]
+        },
+        {
+            name: "Quantity",
+            variations: [
+                "1 pack", "3 pack", "6 pack", "12 pack"
+            ]
+        },
+    ]
+
+    const variationPresetOptions = variationsPresets.map(preset => ({
+        value: preset.name,
+        label: preset.name
+    }))
 
     // TODO: add collapse w advanced settings: quanitity limit, https://mantine.dev/core/collapse/#usage
     // product options: size, color, custom
@@ -42,8 +83,6 @@ export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, 
 
     const handlecreateproduct = async (values: any) => {
         console.log("handle create got: ", values)
-        const { name, description, price, quantity } = values
-
         const createdProduct = (save) ? await createProduct(values, s_id, u_id) : await createProductWithoutDb(values)
 
         const items = Array.from(products);
@@ -61,7 +100,46 @@ export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, 
         setProducts(newItems)
     }
 
-    const handleDragEnd = (result: DropResult) => {
+    const handleAddVariation = async (values: any) => {
+        console.log("handle create got: ", values)
+
+        const createdVariation = {
+            _id: window.crypto.randomUUID(),
+            name: variationOptionName,
+            price: variationOptionPrice,
+            quantity: variationOptionQuantity
+        }
+
+        console.log(createdVariation)
+        const items = Array.from(variations);
+        items.push(createdVariation)
+        setVariations(items)
+        // reset inputs
+        setVariationOptionName("")
+        setVariationOptionPrice(0)
+        setVariationOptionQuantity(0)
+    }
+
+    const handleDeleteVariation = async (product: any) => {
+        const items = Array.from(variations);
+        const newItems = items.filter(i => i._id != product._id)
+        setVariations(newItems)
+    }
+
+    const useVariationPreset = (_value: any) => {
+        console.log(_value)
+        const variationsPreset = variationsPresets.find(vp => vp.name == _value)
+        const createdVariations = variationsPreset.variations.map(v => ({
+            _id: window.crypto.randomUUID(),
+            name: v,
+            price: variationOptionPrice,
+            quantity: variationOptionQuantity
+        }))
+        setVariations(createdVariations)
+        setVariationName(variationsPreset.name)
+    }
+
+    const handleProductDragEnd = (result: DropResult) => {
         if (!result.destination) return;
 
         const items = Array.from(products);
@@ -75,6 +153,23 @@ export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, 
         console.log({
             title: 'Table reordered',
             message: `The product named "${items[sourceIndex].name}" has been moved from position ${sourceIndex + 1} to ${destinationIndex + 1}.`,
+            color: 'blue',
+        });
+    };
+
+    const handleVariationDragEnd = (result: DropResult) => {
+        if (!result.destination) return;
+
+        const items = Array.from(variations);
+        const sourceIndex = result.source.index;
+        const destinationIndex = result.destination.index;
+        const [reorderedItem] = items.splice(sourceIndex, 1);
+        items.splice(destinationIndex, 0, reorderedItem);
+
+        setVariations(items);
+        console.log({
+            title: 'Variation Table reordered',
+            message: `The variation named "${items[sourceIndex].name}" has been moved from position ${sourceIndex + 1} to ${destinationIndex + 1}.`,
             color: 'blue',
         });
     };
@@ -109,7 +204,7 @@ export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, 
             onConfirm: () => handledeleteproduct(product),
         })
 
-    const columns: DataTableColumn<RecordData>[] = [
+    const productColumns: DataTableColumn<ProductRecordData>[] = [
         // add empty header column for the drag handle
         { accessor: '', hiddenContent: true, width: 30 },
         { accessor: 'name', },
@@ -150,10 +245,35 @@ export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, 
         },
     ];
 
+    let variationColumns: DataTableColumn<VariationRecordData>[] = [
+        // add empty header column for the drag handle
+        { accessor: '', hiddenContent: true, width: 30 },
+        { accessor: 'name', },
+        { accessor: 'price', },
+        {
+            accessor: 'delete',
+            width: 100,
+            textAlign: 'center',
+            render: (variation) => (
+                <ActionIcon
+                    size="sm"
+                    variant="subtle"
+                    color="red"
+                    onClick={() => handleDeleteVariation(variation)}
+                >
+                    <IconTrash size={16} />
+                </ActionIcon>
+            ),
+        },
+    ];
+
+    if (useInventory) {
+        variationColumns.splice(3, 0, { accessor: 'quantity' })
+    }
+
     return (
         <>
             <Modal opened={createModalOpened} onClose={close} title="Add Product">
-
                 <form onSubmit={form.onSubmit((values) => handlecreateproduct(values))}>
                     <Stack>
                         <TextInput
@@ -212,32 +332,125 @@ export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, 
 
                                 <Center ta="center">
                                     <Stack>
-                                    <Text size="xl" inline>
-                                        Add Product Images here
-                                    </Text>
-                                    <Text size="sm" c="dimmed" inline mt={7}>
-                                        Attach as many files as you like, each file should not exceed 5mb
-                                    </Text>
+                                        <Text size="xl" inline>
+                                            Add Product Images here
+                                        </Text>
+                                        <Text size="sm" c="dimmed" inline mt={7}>
+                                            Attach as many files as you like, each file should not exceed 5mb
+                                        </Text>
                                     </Stack>
                                 </Center>
                             </Group>
                         </Dropzone>
 
-                        <NumberInput
-                            required
-                            leftSection={(<IconCurrencyDollar style={{ width: rem(16), height: rem(16) }} />)}
-                            label="Price"
-                            value={form.values.price}
-                            onChange={(event) => form.setFieldValue('price', Number(event))}
-                            placeholder="9.99"
+                        <Checkbox
+                            checked={useVariations}
+                            onChange={(event) => setUseVariations(event.currentTarget.checked)}
+                            label="Variations"
+                            description="Does your product have sizing or color options?"
                         />
-                        <NumberInput
-                            label="Quantity"
-                            value={form.values.quantity}
-                            description="How many do you have?"
-                            onChange={(event) => form.setFieldValue('quantity', Number(event))}
-                            placeholder="100"
+
+                        <Checkbox
+                            checked={useInventory}
+                            onChange={(event) => setUseInventory(event.currentTarget.checked)}
+                            label="Track Inventory"
+                            description="Do you need to track product inventory?"
                         />
+
+                        <Checkbox
+                            checked={useShipping}
+                            onChange={(event) => setUseShipping(event.currentTarget.checked)}
+                            label="Shipping"
+                            description="Do you need to generate shipping labels?"
+                        />
+
+                        {useVariations ? (
+                            <Box>
+                                <Select
+                                data={variationPresetOptions}
+                                label="Variation preset"
+                                onChange={(_value) => useVariationPreset(_value)}
+                                />
+                                <TextInput
+
+                                label="Variation name"
+                                value={variationName}
+                                onChange={(event) => setVariationName(event?.currentTarget.value)} />
+                                <DragDropContext onDragEnd={handleVariationDragEnd}>
+                                    <DataTable<VariationRecordData>
+                                        columns={variationColumns}
+                                        records={variations}
+                                        minHeight={150}
+                                        noRecordsText="No Variations"
+                                        striped
+                                        tableWrapper={({ children }) => (
+                                            <Droppable droppableId="datatable">
+                                                {(provided) => (
+                                                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                                                        {children}
+                                                        {provided.placeholder}
+                                                    </div>
+                                                )}
+                                            </Droppable>
+                                        )}
+                                        styles={{ table: { tableLayout: 'fixed' } }}
+                                        rowFactory={({ record, index, rowProps, children }) => (
+                                            <Draggable key={record._id} draggableId={record._id} index={index}>
+                                                {(provided, snapshot) => (
+                                                    <DataTableDraggableRow isDragging={snapshot.isDragging} {...rowProps} {...provided.draggableProps}>
+                                                        {/** custom drag handle */}
+                                                        <TableTd {...provided.dragHandleProps} ref={provided.innerRef}>
+                                                            <IconGripVertical size={16} />
+                                                        </TableTd>
+                                                        {children}
+                                                    </DataTableDraggableRow>
+                                                )}
+                                            </Draggable>
+                                        )}
+                                    />
+                                </DragDropContext>
+
+                                <TextInput label="Name"
+                                    value={variationOptionName}
+                                    onChange={(event) => setVariationOptionName(event?.currentTarget.value)} />
+                                <NumberInput
+                                    required
+                                    leftSection={(<IconCurrencyDollar style={{ width: rem(16), height: rem(16) }} />)}
+                                    label="Price"
+                                    value={variationOptionPrice}
+                                    onChange={(value) => setVariationOptionPrice(Number(value))}
+                                    placeholder="9.99"
+                                />
+                                <NumberInput
+                                    label="Quantity"
+                                    value={variationOptionQuantity}
+                                    description="How many do you have?"
+                                    onChange={(value) => setVariationOptionQuantity(Number(value))}
+                                    placeholder="100"
+                                />
+                                <Button onClick={handleAddVariation}>Add Variation</Button>
+                            </Box>
+                        ) : (
+                            <Box>
+                                <NumberInput
+                                    required
+                                    leftSection={(<IconCurrencyDollar style={{ width: rem(16), height: rem(16) }} />)}
+                                    label="Price"
+                                    value={form.values.price}
+                                    onChange={(event) => form.setFieldValue('price', Number(event))}
+                                    placeholder="9.99"
+                                />
+                                {useInventory && (
+                                    <NumberInput
+                                        label="Quantity"
+                                        value={form.values.quantity}
+                                        description="How many do you have?"
+                                        onChange={(event) => form.setFieldValue('quantity', Number(event))}
+                                        placeholder="100"
+                                    />
+                                )}
+                            </Box>
+                        )}
                     </Stack>
                     <Group justify="space-between" mt="xl">
                         <Button type="submit" fullWidth mt="xl">
@@ -246,11 +459,10 @@ export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, 
                     </Group>
                 </form>
             </Modal>
-            <DragDropContext onDragEnd={handleDragEnd}>
-                <DataTable<RecordData>
-                    columns={columns}
+            <DragDropContext onDragEnd={handleProductDragEnd}>
+                <DataTable<ProductRecordData>
+                    columns={productColumns}
                     records={products}
-
                     minHeight={150}
                     noRecordsText="No Products"
                     striped
@@ -284,7 +496,6 @@ export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, 
             {orderChanged && (
                 <Button>Save Reording</Button>
             )}
-
         </>
     );
 }
