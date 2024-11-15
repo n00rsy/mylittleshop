@@ -7,6 +7,7 @@ import User from "@/models/User"
 
 export const createProduct = async (productInfo: any, s_id: string, u_id: string) => {
     console.log("createProduct got: ", productInfo, s_id, u_id)
+    console.log(productInfo.variations[0].variationOptions)
     await connectDB();
     const user = await User.findById(u_id)
     if (!user) {
@@ -21,6 +22,7 @@ export const createProduct = async (productInfo: any, s_id: string, u_id: string
     const savedProduct = await newProduct.save();
     shop.products.push([savedProduct._id])
     await shop.save()
+    console.log("saved product: ", savedProduct.toObject())
     return savedProduct.toObject()
 }
 

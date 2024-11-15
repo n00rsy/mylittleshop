@@ -2,6 +2,7 @@
 
 import { getShopByUrl } from "@/actions/shop";
 import { ShopContext } from "@/context/ShopContext";
+import { ProductDocument } from "@/models/Product";
 import { Anchor, AppShell, Badge, Box, Button, Card, Center, Container, Divider, Flex, Grid, Group, Image, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconAt, IconBasket, IconBrandFacebook, IconBrandInstagram } from "@tabler/icons-react";
@@ -12,10 +13,13 @@ export default function ShopPage() {
     const { shopData } = useContext(ShopContext)
     console.log("Shop page shopData", shopData)
 
-    const cards = shopData.products.map((product) => {
+    const cards = shopData.products.map((product: ProductDocument) => {
+
+        const primaryVariation = product.variations[0].variationOptions.find(vo => vo.primary)
+
         return (
             <Box key={product._id} style={{ width: 290 }}>
-                <Card shadow="sm" padding="sm" radius="md" withBorder component="a" href={`${shopData.url}/product/${product.urlName}`}>
+                <Card shadow="sm" padding="sm" radius="md" withBorder component="a" href={`${shopData.url}/product/${product.url}`}>
                     <Card.Section>
                         <Image
                             src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png"
@@ -26,7 +30,7 @@ export default function ShopPage() {
 
                     <Text >{product.name}</Text>
                     <Title style={{color: 'var(--mantine-color-gray-8)'}} order={6}>
-                        ${product.price}
+                        ${primaryVariation.price}
                     </Title>
                 </Card>
             </Box>

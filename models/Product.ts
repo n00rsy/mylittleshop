@@ -4,6 +4,7 @@ export interface VariationOption {
     name: string;
     price?: number;
     quantity?: number;
+    primary?: boolean
 }
 
 export interface Variation {
@@ -14,9 +15,8 @@ export interface Variation {
 export interface ProductDocument {
     _id: string;
     name: string;
-    urlName: string;
+    url: string;
     description: string;
-    price: number;
     variations: [Variation]
     images: [string];
     createdAt: Date;
@@ -26,15 +26,16 @@ export interface ProductDocument {
 
 export const ProductSchema = new Schema({
     name: { type: String, required: true },
-    urlName: { type: String, required: true },
+    url: { type: String, required: true },
     description: String,
-    price: { type: Number, required: true, min: 0 },
     variations: [{
-        name: String,
-        variations: [{
+        name: {type: String, required: true},
+
+        variationOptions: [{
             name: String,
             price: {type: Number, required: false},
             quantity: {type: Number, required: false},
+            primary: {type: Boolean, required: false}
         }]
     }],
     images: [String],

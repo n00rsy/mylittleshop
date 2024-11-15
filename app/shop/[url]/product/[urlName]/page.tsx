@@ -10,9 +10,9 @@ import { useRouter } from "next/navigation";
 export default function ProductPage({ params }: { params: any }) {
     const [selectedQuantity, setSelectedQuantity] = useState(1);
     const router = useRouter()
-    const { urlName } = params
+    const { url } = params
     const { shopData } = useContext(ShopContext)
-    const product = shopData.products.find((p) => p.urlName == urlName)
+    const product = shopData.products.find((p) => p.url == url)
     if (!product) {
         router.push('/shop/404')
     }

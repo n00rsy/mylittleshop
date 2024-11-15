@@ -7,6 +7,7 @@ import { getUserByEmail } from "@/actions/user";
 import { DashboardProvider } from "@/context/DashboardContext";
 import { isStripeAccountOnboarded } from "@/actions/stripe";
 import { MantineProvider, createTheme } from "@mantine/core";
+import { ModalsProvider } from "@mantine/modals";
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
     console.log("dashboard layout function...")
@@ -18,14 +19,16 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     const userData = await getUserByEmail(session.user?.email)
     console.log("userData", userData)
     const isStripeOnboarded = await isStripeAccountOnboarded(userData.stripe.accountId)
-    const theme = createTheme({primaryColor: 'pink'})
+    const theme = createTheme({ primaryColor: 'pink' })
     return (
         <MantineProvider theme={theme}>
-        <DashboardProvider initialUserData={userData} initialIsStripeOnboarded={isStripeOnboarded}>
-            <Dashboard>
-                {children}
-            </Dashboard>
-        </DashboardProvider>
+            <ModalsProvider>
+                <DashboardProvider initialUserData={userData} initialIsStripeOnboarded={isStripeOnboarded}>
+                    <Dashboard>
+                        {children}
+                    </Dashboard>
+                </DashboardProvider>
+            </ModalsProvider>
         </MantineProvider>
     )
 }
