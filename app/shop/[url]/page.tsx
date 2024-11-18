@@ -22,7 +22,7 @@ export default function ShopPage() {
                 <Card shadow="sm" padding="sm" radius="md" withBorder component="a" href={`${shopData.url}/product/${product.url}`}>
                     <Card.Section>
                         <Image
-                            src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png"
+                            src={product.images[0]}
                             height={250}
                             alt={product.name}
                         />

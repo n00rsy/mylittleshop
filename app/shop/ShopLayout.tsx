@@ -23,7 +23,7 @@ export default function ShopLayout({ children, shopData }: { children: any, shop
     return (
         <AppShell
             header={{ height: 60 }}
-            padding={200}
+            padding={30}
             style={{
             }}
         >

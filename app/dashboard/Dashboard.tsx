@@ -27,7 +27,7 @@ export default function Dashboard({ children }: { children: ReactNode }) {
 
     const pathname = usePathname();
     let { shopindex } = useParams()
-    const shopi = Number(shopindex || userData!.defaultShop || "0")
+    const shopi = Number(shopindex || userData!.defaultShop || "5")
     useEffect(() => {
 
         console.log(`Route changed to: ${pathname}`);
@@ -88,7 +88,7 @@ export default function Dashboard({ children }: { children: ReactNode }) {
 
     const navlinks = pages.map((page) => {
         return (<NavLink
-            href={`/dashboard/${shopindex}/${page.title}`}
+            href={`/dashboard/${shopi}/${page.title}`}
             label={upperFirst(page.title)}
             leftSection={<page.icon size="1rem" stroke={1.5} />}
             data-active={activePage === page.title || undefined}

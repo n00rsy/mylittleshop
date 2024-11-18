@@ -5,6 +5,7 @@ import { useContext, useState } from "react"
 import { upperFirst, useToggle } from '@mantine/hooks';
 import { updateShop } from "@/actions/shop";
 import { themes, colorSchemes } from "@/models/Shop";
+import { generateColors } from '@mantine/colors-generator';
 
 export default function Settings() {
     const { userData, activeShopIndex } = useContext(DashboardContext)
@@ -50,6 +51,7 @@ export default function Settings() {
             theme: theme,
             colorScheme: colorScheme,
             primaryColor: primaryColor,
+            mantineColor: generateColors(primaryColor)
         }
 
         console.log({ _id: activeShop._id, styles: styles })

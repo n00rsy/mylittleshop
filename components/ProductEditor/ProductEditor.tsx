@@ -3,7 +3,6 @@
 import { createProduct, createProductWithoutDb, deleteProduct } from '@/actions/product';
 import { DragDropContext, Draggable, type DropResult, Droppable } from '@hello-pangea/dnd';
 import { ActionIcon, Button, Container, Group, Modal, Text, Stack, Table, TableTd, TextInput, Title, Textarea, NumberInput, rem, Box, Paper, Center, Checkbox, Select, Divider, Radio } from '@mantine/core';
-import { useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
 import { IconCurrencyDollar, IconEdit, IconEye, IconGripVertical, IconPhoto, IconPlus, IconTrash, IconUpload, IconX } from '@tabler/icons-react';
 import { DataTable, DataTableColumn, DataTableDraggableRow } from 'mantine-datatable';
@@ -32,6 +31,7 @@ export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, 
     const [orderChanged, setOrderChanged] = useState(false)
     const [createModalOpened, { open, close }] = useDisclosure(false);
     const [urlEdited, setUrlEdited] = useState(false)
+    const [images, setImages] = useState<string[]>([])
 
     const [useVariations, setUseVariations] = useState(false)
     const [useInventory, setUseInventory] = useState(false)
@@ -44,6 +44,8 @@ export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, 
     const [variationOptionQuantity, setVariationOptionQuantity] = useState(0)
 
     const [variationOptionPrimary, setVariationOptionPrimary] = useState('')
+    const [variationOptionPrices, setVariationOptionPrices] = useState<any>({})
+    const [variationOptionQuantities, setVariationOptionQuantities] = useState<any>({})
 
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
@@ -51,13 +53,6 @@ export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, 
     const [quantity, setQuantity] = useState(0)
     const [url, setUrl] = useState('')
     const [errors, setErrors] = useState({})
-
-    const priceRefs = useRef<Array<any>>({})
-
-    const setPriceRef = (el: any, key: any) => {
-        if (!priceRefs.current[key])
-            priceRefs.current[key] = el
-    }
 
     const variationsPresets = [
         {
@@ -94,17 +89,12 @@ export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, 
     }
 
     const handlecreateproduct = async (values: any) => {
-
         // validations here
         let productData = {
             name: name,
             description: description,
             url: url,
-        }
-
-
-        for (const [key, value] of Object.entries(priceRefs.current)) {
-            console.log(key, value);
+            images: images
         }
 
         if (useVariations) {
@@ -113,8 +103,8 @@ export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, 
                     name: variationName,
                     variationOptions: variations.map(variation => ({
                         name: variation.name,
-                        price: variation.price,
-                        quantity: variation.quantity,
+                        price: variationOptionPrices[variation.name],
+                        quantity: 100,
                         primary: variation.name == variationOptionPrimary
                     }))
                 }
@@ -226,6 +216,30 @@ export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, 
         });
     };
 
+    const handleUploadImages = async (files: File[]) => {
+        console.log(files)
+        for(const file of files) {
+            const response = await fetch('/api/upload', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/octet-stream'
+                },
+                body: await file.arrayBuffer()
+            })
+            const result = await response.json()
+            console.log(result)
+            if (result.success) {
+                const newImages = [...images]
+                newImages.push(result.path)
+                setImages(newImages)
+                console.log(images)
+            }
+            else {
+                // error alert
+            }
+        }
+    }
+
     const handlenamechange = (value: string) => {
         setName(value)
         if (!urlEdited) {
@@ -240,6 +254,18 @@ export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, 
 
     const urlstrip = (input: string) => {
         return input.replace(/[^a-zA-Z0-9]/g, '').toLowerCase()
+    }
+
+    const handleVariationOptionPriceChange = (variationOptionName: string, newPrice: number) => {
+        const newVariationOptionPrices = { ...variationOptionPrices }
+        newVariationOptionPrices[variationOptionName] = newPrice
+        setVariationOptionPrices(newVariationOptionPrices)
+    }
+
+    const handleVariationOptionQuantityChange = (variationOptionName: string, newQuantity: number) => {
+        const newVariationOptionQuantities = { ...variationOptionQuantities }
+        newVariationOptionQuantities[variationOptionName] = newQuantity
+        setVariationOptionQuantities(newVariationOptionQuantities)
     }
 
     const confirmDeleteModal = (product: any) =>
@@ -303,19 +329,19 @@ export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, 
         { accessor: 'name', },
         {
             accessor: 'price',
-            render: (variation) => {
-                return (
-                    <TextInput
-                        ref={(el) => setPriceRef(el, variation.name)}
-                    ></TextInput>
-                )
-            }
+            render: (variation) =>
+            (
+                <NumberInput
+                    value={variationOptionPrices[variation.name]}
+                    onChange={(value) => handleVariationOptionPriceChange(variation.name, Number(value))}
+                />
+            )
         },
         {
             accessor: 'primary',
             render: (variation) => {
                 return (
-                    <Radio value={variation.name} label={variation.name}/>
+                    <Radio value={variation.name} label={variation.name} />
                 )
             }
         },
@@ -337,7 +363,16 @@ export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, 
     ];
 
     if (useInventory) {
-        variationColumns.splice(3, 0, { accessor: 'quantity' })
+        variationColumns.splice(3, 0, {
+            accessor: 'quantity',
+            render: (variation) =>
+            (
+                <NumberInput
+                    value={variationOptionQuantities[variation.name]}
+                    onChange={(value) => handleVariationOptionQuantityChange(variation.name, Number(value))}
+                />
+            )
+        })
     }
 
     return (
@@ -373,7 +408,7 @@ export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, 
                     />
 
                     <Dropzone
-                        onDrop={(files) => console.log('accepted files', files)}
+                        onDrop={(files) => handleUploadImages(files)}
                         onReject={(files) => console.log('rejected files', files)}
                         maxSize={5 * 1024 ** 2}
                         accept={IMAGE_MIME_TYPE}
@@ -444,43 +479,43 @@ export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, 
                                 label="Variation name"
                                 value={variationName}
                                 onChange={(event) => setVariationName(event?.currentTarget.value)} />
-                                <Radio.Group
+                            <Radio.Group
                                 value={variationOptionPrimary}
                                 onChange={setVariationOptionPrimary}
-                                >
-                            <DragDropContext onDragEnd={handleVariationDragEnd}>
-                                <DataTable<VariationRecordData>
-                                    columns={variationColumns}
-                                    records={variations}
-                                    minHeight={150}
-                                    noRecordsText="No Variations"
-                                    striped
-                                    tableWrapper={({ children }) => (
-                                        <Droppable droppableId="datatable">
-                                            {(provided) => (
-                                                <div {...provided.droppableProps} ref={provided.innerRef}>
-                                                    {children}
-                                                    {provided.placeholder}
-                                                </div>
-                                            )}
-                                        </Droppable>
-                                    )}
-                                    styles={{ table: { tableLayout: 'fixed' } }}
-                                    rowFactory={({ record, index, rowProps, children }) => (
-                                        <Draggable key={record._id} draggableId={record._id} index={index}>
-                                            {(provided, snapshot) => (
-                                                <DataTableDraggableRow isDragging={snapshot.isDragging} {...rowProps} {...provided.draggableProps}>
-                                                    {/** custom drag handle */}
-                                                    <TableTd {...provided.dragHandleProps} ref={provided.innerRef}>
-                                                        <IconGripVertical size={16} />
-                                                    </TableTd>
-                                                    {children}
-                                                </DataTableDraggableRow>
-                                            )}
-                                        </Draggable>
-                                    )}
-                                />
-                            </DragDropContext>
+                            >
+                                <DragDropContext onDragEnd={handleVariationDragEnd}>
+                                    <DataTable<VariationRecordData>
+                                        columns={variationColumns}
+                                        records={variations}
+                                        minHeight={150}
+                                        noRecordsText="No Variations"
+                                        striped
+                                        tableWrapper={({ children }) => (
+                                            <Droppable droppableId="datatable">
+                                                {(provided) => (
+                                                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                                                        {children}
+                                                        {provided.placeholder}
+                                                    </div>
+                                                )}
+                                            </Droppable>
+                                        )}
+                                        styles={{ table: { tableLayout: 'fixed' } }}
+                                        rowFactory={({ record, index, rowProps, children }) => (
+                                            <Draggable key={record._id} draggableId={record._id} index={index}>
+                                                {(provided, snapshot) => (
+                                                    <DataTableDraggableRow isDragging={snapshot.isDragging} {...rowProps} {...provided.draggableProps}>
+                                                        {/** custom drag handle */}
+                                                        <TableTd {...provided.dragHandleProps} ref={provided.innerRef}>
+                                                            <IconGripVertical size={16} />
+                                                        </TableTd>
+                                                        {children}
+                                                    </DataTableDraggableRow>
+                                                )}
+                                            </Draggable>
+                                        )}
+                                    />
+                                </DragDropContext>
                             </Radio.Group>
                             <Title order={3}>Add Variation</Title>
                             <TextInput label="Name"

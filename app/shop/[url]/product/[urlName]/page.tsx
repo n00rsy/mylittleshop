@@ -3,44 +3,101 @@
 import { ShopContext } from "@/context/ShopContext";
 import { useContext } from "react";
 import React, { useState } from 'react';
-import { Container, Grid, Image, Text, NumberInput, Button, Group, Title, } from '@mantine/core';
+import { Container, Grid, Image, Text, NumberInput, Button, Group, Title, Flex, Box, Stack, Paper, Divider, Select, } from '@mantine/core';
 import { useRouter } from "next/navigation";
 
+// TODO: copy this layout - https://www.bangcookies.com/products/kitchen-sink-cookie
 
 export default function ProductPage({ params }: { params: any }) {
     const [selectedQuantity, setSelectedQuantity] = useState(1);
     const router = useRouter()
-    const { url } = params
+    const { urlName } = params
     const { shopData } = useContext(ShopContext)
-    const product = shopData.products.find((p) => p.url == url)
+    console.log(shopData)
+    console.log("url", urlName)
+    const product = shopData.products.find((p) => p.url == urlName)
+    const defaultVariation = product.variations[0].variationOptions.find(vo => vo.primary)
+    const [activeVariation, setActiveVariation] = useState(defaultVariation)
+
     if (!product) {
         router.push('/shop/404')
     }
     const handleAddToBag = () => { // Implement add to bag functionality here
-        console.log(`Added ${selectedQuantity} of ${product.name} to the bag.`);
+        console.log(activeVariation);
     };
+
+    const handleVariationChange = (newVariation?: string) => {
+        if (!newVariation) {
+            setActiveVariation(defaultVariation)
+        }
+        setActiveVariation(product.variations[0].variationOptions.find(vo => vo.name == newVariation))
+    }
+
+    const variationPickers = () => {
+
+        console.log("variationPickers", product.variations[0].variationOptions)
+        if (product.variations[0].variationOptions.length == 1) {
+            return (
+                <></>
+            )
+        }
+
+        return product.variations.map((variation: any) => {
+            return(
+                <Select
+                    key={variation.name}
+                    label={variation.name}
+                    defaultValue={defaultVariation}
+                    data={variation.variationOptions.map((op) => op.name)}
+                    value={activeVariation.name}
+                    onChange={(value) => handleVariationChange(value)}
+                />
+            )
+        })
+    }
+
     return (
-        <Container>
-            <Grid gutter="md">
-                <Grid.Col
+        <Container size="xl">
+            <Stack>
+                <Flex
+                    direction={{ base: 'column', md: 'row' }}
+                    gap={{ base: 'sm', sm: 'sm' }}
+                    justify={{ sm: 'center' }}
                 >
-                    {product.images.length > 0 ?
-                        (<Group> {product.images.map((image, index) =>
-                            (<Image key={index} src={image} alt={product.name} radius="md" />))}
-                        </Group>) : (<Image src="https://via.placeholder.com/300" alt="Placeholder" radius="md" />)}
-                </Grid.Col>
-                <Grid.Col>
-                    <Title order={2}>{product.name}</Title>
-                    <Text size="sm" color="dimmed" mb="md">
+                    <Box>
+                        {product.images.length > 0 ?
+                            (<Group> {product.images.map((image, index) =>
+                                (<Image key={index} src={image} alt={product.name} radius="md" />))}
+                            </Group>) : (<Image src="https://via.placeholder.com/300" alt="Placeholder" radius="md" />)}
+                    </Box>
+                    <Box pr={40} h={0} m={0}></Box>
+                    <Flex justify="flex-start" w="100%" h="100%" direction="column" style={{ flexGrow: 1 }}>
+                        <Box flex={1} />
+                        <Box>
+                            <Title order={2}>The Original {product.name} eeeeeeeeeeeeeeee</Title>
+                            <Text size="xl" mb="md">
+                                ${activeVariation.price.toFixed(2)}
+                            </Text>
+
+                            <Group align="flex-end">
+                                {variationPickers()}
+                            </Group>
+
+                            <Group pt={10} align="flex-end">
+                                <Button onClick={handleAddToBag}>Add to Cart</Button>
+                            </Group>
+                        </Box>
+                        <Box flex={1} />
+                    </Flex>
+                </Flex>
+                <Divider />
+                <Paper style={{
+                    backgroundColor: shopData.styles.mantineColor[0]
+                }}>
+                    <Text size="sm" mb="md">
                         {product.description}
                     </Text>
-                    <Text size="xl" mb="md">
-                        ${product.price.toFixed(2)}
-                    </Text> <Group align="flex-end">
-                        <NumberInput label="Quantity" value={selectedQuantity} onChange={(val) => setSelectedQuantity(val)} min={1} max={product.quantity} styles={{ input: { width: '80px' } }} />
-                        <Button onClick={handleAddToBag}>Add to Bag</Button>
-                    </Group>
-                </Grid.Col>
-            </Grid>
+                </Paper>
+            </Stack>
         </Container>);
 };

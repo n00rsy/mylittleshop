@@ -54,7 +54,7 @@ export default function Home() {
         <Center style={{ height: '50vh' }}>
             <Container>
                 <Stack>
-                    <Button component="a" href={`/shop/${activeShop.url}`}>View your Shop</Button>
+                    <Button component="a" target="_blank" href={`/shop/${activeShop.url}`}>View My Shop</Button>
                     {(stripeOnboarded) ?
                         (<Button onClick={handleeditstripe}>Edit Stripe Details</Button>) :
                         (<Button onClick={handlefinshstripe}>Finish Stripe Details</Button>)

@@ -11,8 +11,18 @@ export default async function Layout({ params, children }: { params: any, childr
     if (!shopData || 'error' in shopData) {
         redirect('/404')
     }
+    const theme = {
+        colorScheme: shopData.styles.colorScheme,
+        primaryColor: 'custom-primary-color',
+        colors: {
+            'custom-primary-color': shopData.styles.mantineColor,
+          },
+    }
+
+    console.log(theme)
+
     return (
-        <MantineProvider>
+        <MantineProvider theme={theme}>
             <ShopProvider initialShopData={shopData}>
                 <ShopLayout shopData={shopData}>
                     {children}
