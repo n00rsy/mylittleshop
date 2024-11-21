@@ -5,6 +5,7 @@ import { useContext } from "react";
 import React, { useState } from 'react';
 import { Container, Grid, Image, Text, NumberInput, Button, Group, Title, Flex, Box, Stack, Paper, Divider, Select, } from '@mantine/core';
 import { useRouter } from "next/navigation";
+import { addItemToCart, emptyCart } from "@/utils/cartUtils";
 
 // TODO: copy this layout - https://www.bangcookies.com/products/kitchen-sink-cookie
 
@@ -12,7 +13,7 @@ export default function ProductPage({ params }: { params: any }) {
     const [selectedQuantity, setSelectedQuantity] = useState(1);
     const router = useRouter()
     const { urlName } = params
-    const { shopData } = useContext(ShopContext)
+    const { shopData, cartItems, setCartItems } = useContext(ShopContext)
     console.log(shopData)
     console.log("url", urlName)
     const product = shopData.products.find((p) => p.url == urlName)
@@ -22,8 +23,24 @@ export default function ProductPage({ params }: { params: any }) {
     if (!product) {
         router.push('/shop/404')
     }
-    const handleAddToBag = () => { // Implement add to bag functionality here
-        console.log(activeVariation);
+    const handleAddToBag = () => {
+        const productDetails = {
+            _id: `${product._id}-${activeVariation._id}`,
+            name: product.name,
+            images: product.images,
+            url: product.url,
+            quantity: 1, // default
+            variationName: product.variations[0].name,
+            variationDetails: {
+                name: activeVariation.name,
+                price: activeVariation.price,
+                quantity: activeVariation.quantity
+            }
+        }
+        console.log("adding to cart: ", productDetails)
+        emptyCart(setCartItems)
+        addItemToCart(productDetails, cartItems, setCartItems)
+        console.log(cartItems)
     };
 
     const handleVariationChange = (newVariation?: string) => {
@@ -34,8 +51,6 @@ export default function ProductPage({ params }: { params: any }) {
     }
 
     const variationPickers = () => {
-
-        console.log("variationPickers", product.variations[0].variationOptions)
         if (product.variations[0].variationOptions.length == 1) {
             return (
                 <></>
@@ -74,7 +89,7 @@ export default function ProductPage({ params }: { params: any }) {
                     <Flex justify="flex-start" w="100%" h="100%" direction="column" style={{ flexGrow: 1 }}>
                         <Box flex={1} />
                         <Box>
-                            <Title order={2}>The Original {product.name} eeeeeeeeeeeeeeee</Title>
+                            <Title order={2}>{product.name}</Title>
                             <Text size="xl" mb="md">
                                 ${activeVariation.price.toFixed(2)}
                             </Text>
