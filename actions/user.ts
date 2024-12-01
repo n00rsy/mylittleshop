@@ -1,7 +1,7 @@
 'use server'
 import { connectDB } from "@/lib/mongodb";
 import User, { UserDocument } from "@/models/User";
-import Shop, {ShopDocument} from "@/models/Shop";
+import Shop, { ShopDocument } from "@/models/Shop";
 import bcrypt from "bcryptjs";
 import { createStripeAccount } from "./stripe";
 
@@ -20,10 +20,9 @@ export const register = async (values: any) => {
     email,
     password: hashedPassword,
   });
-  await user.save();
-
-  await createStripeAccount(user)
-
+  const stripeAccount = await createStripeAccount(user)
+  user.stripe.accountId = stripeAccount.id
+  await user.save()
 }
 
 export const getUserByEmail = async (email: string) => {

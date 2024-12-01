@@ -21,8 +21,9 @@ function addItemHelper(item: any, cartItems: any) {
 
 export function removeItemFromCart(item: any, cart: any, setCartItems: any) {
     const newCart = cart.filter((i: any) => {
-        return i.id !== item
+        return i._id !== item._id
     })
+    console.log("newcart: ", newCart)
     setCartItems(newCart)
     localStorage.setItem("cart", JSON.stringify(newCart))
 }

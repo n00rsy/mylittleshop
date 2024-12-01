@@ -2,6 +2,8 @@
 
 import Stripe from 'stripe'
 import { updateUser } from './user'
+import { createProduct } from './product'
+import { ProductDocument, ProductVariation } from '@/models/Product'
 
 const stripe = new Stripe(process.env.STRIPE_SECRECT_KEY_TEST!)
 const app_url = process.env.APP_URL
@@ -14,13 +16,7 @@ export const createStripeAccount = async function (userData: any) {
     })
 
     console.log('account: ', account)
-    const updateDetails = {
-        stripe: {
-            accountId: account.id
-        }
-    }
-
-    await updateUser(userData._id, updateDetails)
+    return account
 }
 
 export const onboardStripeAccount = async function (accountId: string) {
@@ -102,4 +98,39 @@ export const createStripeSession = async function (accountId: string) {
     catch (error) {
         return { error: error }
     }
+}
+
+export const createStripeProduct = async function (productInfo: ProductVariation) {
+    console.log('createStripeProduct', productInfo)
+    const product = await stripe.products.create({
+        name: productInfo.name,
+        active: productInfo.active,
+        description: productInfo.description,
+        tax_code: 'txcd_10000000', // TODO: FIX
+        images: productInfo.images,
+        default_price_data: {
+            currency: "usd",
+            tax_behavior: "inclusive",
+            unit_amount: productInfo.price * 100 // convert to cents
+        }
+    });
+    return product
+}
+
+export const getStripeProduct = async function (id: string) {
+    return stripe.products.retrieve(id)
+}
+
+export const createStripePrice = async function (priceInfo: any) {
+    const price = await stripe.prices.create({
+        currency: "usd",
+        product: priceInfo.product,
+        tax_behavior: "inclusive",
+        unit_amount: priceInfo.price
+    })
+    return price
+}
+
+export const getStripePrice = async function (id: string) {
+    return stripe.prices.retrieve(id)
 }

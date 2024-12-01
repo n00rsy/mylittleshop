@@ -117,7 +117,8 @@ export default function ProductEditor({ u_id, s_id, p, save }: { u_id?: string, 
                     name: 'standard',
                     quantity: quantity,
                     price: price,
-                    primary: true
+                    primary: true,
+                    active: true
                 }
                 ]
             }]

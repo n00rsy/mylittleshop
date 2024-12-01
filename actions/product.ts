@@ -1,9 +1,10 @@
 'use server'
 
 import { connectDB } from "@/lib/mongodb"
-import Product from "@/models/Product"
+import Product, { VariationOption } from "@/models/Product"
 import Shop from "@/models/Shop"
 import User from "@/models/User"
+import { createStripeProduct } from "./stripe"
 
 export const createProduct = async (productInfo: any, s_id: string, u_id: string) => {
     console.log("createProduct got: ", productInfo, s_id, u_id)
@@ -18,7 +19,35 @@ export const createProduct = async (productInfo: any, s_id: string, u_id: string
     if (!shop) {
         return 'Shop does not exist.'
     }
-    const newProduct = new Product(productInfo)
+    let newVariationOptions: VariationOption[] = []
+    await productInfo.variations[0].variationOptions.forEach(async (variationOption: VariationOption) => {
+        console.log("processing variation: ", variationOption)
+        const stripeProduct = await createStripeProduct({
+            _id: variationOption._id,
+            name: `${productInfo.name} - ${variationOption.name}`,
+            description: productInfo.description,
+            active: variationOption.active,
+            images: productInfo.images,
+            price: variationOption.price,
+            quantity: variationOption.quantity,
+            url: productInfo.url
+        })
+        newVariationOptions.push({
+            name: variationOption.name,
+            price: variationOption.price,
+            quantity: variationOption.quantity,
+            primary: variationOption.primary,
+            stripeId: stripeProduct.id,
+            active: variationOption.active
+        })
+        console.log("added ", variationOption.name)
+    })
+    console.log("YEEEEEE", productInfo.variations[0].variationOptions[0])
+    productInfo.variations[0].variationOptions = newVariationOptions
+    console.log("YEEEEEE", productInfo.variations[0].variationOptions[0])
+    let newProduct = new Product(productInfo)
+    // newProduct.variations[0].variationOptions = newVariationOptions
+    console.log(newProduct)
     const savedProduct = await newProduct.save();
     shop.products.push([savedProduct._id])
     await shop.save()
@@ -47,7 +76,7 @@ export const deleteProduct = async (p_id: string, s_id: string, u_id: string) =>
     console.log("getProduct got: ", p_id, u_id)
     await connectDB();
 
-    await Product.deleteOne({"_id": p_id})
+    await Product.deleteOne({ "_id": p_id })
     const shop = await Shop.findById(s_id)
     if (!shop) {
         return 'Shop does not exist.'

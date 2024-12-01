@@ -2,8 +2,8 @@
 
 import ShopFooter from "@/components/ShopFooter/ShopFooter";
 import { ShopContext } from "@/context/ShopContext";
-import { emptyCart } from "@/utils/cartUtils";
-import { AppShell, Box, Button, Center, Container, Divider, Drawer, Flex, Group, Image, Stack, Text, Title } from "@mantine/core";
+import { emptyCart, removeItemFromCart } from "@/utils/cartUtils";
+import { AppShell, Box, Button, Center, Container, Divider, Drawer, Flex, Group, Image, Paper, Stack, Text, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconBasket } from "@tabler/icons-react";
 import { useContext, useEffect, useState } from "react";
@@ -12,9 +12,15 @@ export default function ShopLayout({ children, shopData }: { children: any, shop
 
     const [opened, { open, close }] = useDisclosure(false);
     const { cartItems, setCartItems } = useContext(ShopContext)
+
+    const handleRemoveCartItem = (item:any) => {
+        console.log("hanling remove...")
+        removeItemFromCart(item, cartItems, setCartItems)
+    }
+    console.log(`/shop/${shopData.urlName}/checkout`)
     const cartItemEntries = cartItems.map((item: any) => {
         return (
-            <Box>
+            <Paper mb={20} p={10} withBorder>
                 <Flex direction="row" gap="md">
                     <Image
                         src={item.images[0]}
@@ -22,17 +28,17 @@ export default function ShopLayout({ children, shopData }: { children: any, shop
                         w="auto"
                         fit="contain"
                     ></Image>
-                    <Stack>
-                        <Title order={4}>
+                    <Box>
+                        <Title order={4} pb={10}>
                             {item.name}
                         </Title>
                         <Text>${item.variationDetails.price} </Text>
                         <Text>{item.variationName}: {item.variationDetails.name}</Text>
                         <Text>Quantity: {item.quantity}</Text>
-                    </Stack>
+                    </Box>
                 </Flex>
-                <Button variant="outline">Remove</Button>
-            </Box>
+                <Button variant="outline" mb={10} onClick={() => handleRemoveCartItem(item)}>Remove</Button>
+            </Paper>
         )
     })
 
@@ -65,7 +71,7 @@ export default function ShopLayout({ children, shopData }: { children: any, shop
                     <Divider mt={20} mb={20}/>
                     <Text>Estimated tax & fees: $10000.00</Text>
                     <Text>Total: 100000.000</Text>
-                    <Button fullWidth>Checkout</Button>
+                    <Button fullWidth component="a" href={`/shop/${shopData.url}/checkout`}>Checkout</Button>
                 </Drawer>
             </AppShell.Main>
 

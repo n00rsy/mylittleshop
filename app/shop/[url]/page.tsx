@@ -1,12 +1,9 @@
 'use client'
 
-import { getShopByUrl } from "@/actions/shop";
-import ShopFooter from "@/components/ShopFooter/ShopFooter";
 import { ShopContext } from "@/context/ShopContext";
 import { ProductDocument } from "@/models/Product";
 import { Anchor, AppShell, Badge, Box, Button, Card, Center, Container, Divider, Flex, Grid, Group, Image, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconAt, IconBasket, IconBrandFacebook, IconBrandInstagram } from "@tabler/icons-react";
 import { useContext } from "react";
 
 export default function ShopPage() {
@@ -38,8 +35,6 @@ export default function ShopPage() {
         )
     })
 
-    const [opened, { toggle }] = useDisclosure();
-
     return (
         <Container>
             <Title order={3}>This is where you get books.</Title>
@@ -59,9 +54,6 @@ export default function ShopPage() {
                 )
             }
             <Divider my="lg" ></Divider>
-
-
         </Container>
-
     )
 }

@@ -15,7 +15,6 @@ export default function ProductPage({ params }: { params: any }) {
     const { urlName } = params
     const { shopData, cartItems, setCartItems } = useContext(ShopContext)
     console.log(shopData)
-    console.log("url", urlName)
     const product = shopData.products.find((p) => p.url == urlName)
     const defaultVariation = product.variations[0].variationOptions.find(vo => vo.primary)
     const [activeVariation, setActiveVariation] = useState(defaultVariation)
